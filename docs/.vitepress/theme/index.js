@@ -14,9 +14,9 @@ export default {
         capture_pageview: false,
       });
 
-      router.afterEach(() => {
+      router.onAfterRouteChanged = () => {
         posthog.capture("$pageview", { $current_url: window.location.href });
-      });
+      };
 
       const ScalarWrapper = await import("./ScalarWrapper.vue");
       app.component("ScalarWrapper", ScalarWrapper.default);
