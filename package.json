@@ -23,6 +23,7 @@
   "devDependencies": {
     "@scalar/api-reference": "^1.25.0",
     "playwright": "^1.58.1",
+    "posthog-js": "^1.352.0",
     "sitemap": "^9.0.0",
     "vitepress": "^1.6.4"
   }
