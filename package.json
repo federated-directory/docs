@@ -1,5 +1,5 @@
 {
-  "name": "help2",
+  "name": "docs",
   "version": "1.0.0",
   "description": "Federated Directory Documentation built with VitePress and Scalar",
   "main": "index.js",
@@ -11,20 +11,20 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/federated-directory/help2.git"
+    "url": "git+https://github.com/federated-directory/docs.git"
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
   "bugs": {
-    "url": "https://github.com/federated-directory/help2/issues"
+    "url": "https://github.com/federated-directory/docs/issues"
   },
-  "homepage": "https://github.com/federated-directory/help2#readme",
+  "homepage": "https://github.com/federated-directory/docs#readme",
   "devDependencies": {
-    "@scalar/api-reference": "^1.25.0",
-    "playwright": "^1.58.1",
-    "posthog-js": "^1.352.0",
-    "sitemap": "^9.0.0",
+    "@scalar/api-reference": "^1.52.1",
+    "playwright": "^1.59.1",
+    "posthog-js": "^1.367.0",
+    "sitemap": "^9.0.1",
     "vitepress": "^1.6.4"
   }
 }
