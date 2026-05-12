@@ -821,7 +821,7 @@
         "schemas": [
           "urn:ietf:params:scim:schemas:core:2.0:ServiceProviderConfig"
         ],
-        "documentationUri": "https://help.federated.directory/developer/getting-started",
+        "documentationUri": "https://docs.federated.directory/developer/getting-started",
         "patch": {
           "supported": true
         },
@@ -848,7 +848,7 @@
             "name": "OAuth Bearer Token",
             "description": "Authentication scheme using the OAuth Bearer Token Standard",
             "specUri": "http://www.rfc-editor.org/info/rfc6750",
-            "documentationUri": "https://help.federated.directory/developer/getting-started",
+            "documentationUri": "https://docs.federated.directory/developer/getting-started",
             "type": "oauthbearertoken",
             "primary": true
           }
