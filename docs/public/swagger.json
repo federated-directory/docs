@@ -188,7 +188,7 @@
       "get": {
         "summary": "Get a group or list of groups",
         "operationId": "getV2GroupsId",
-        "description": "Returns a group by ID or a list of groups based on SCIM filtering",
+        "description": "Returns a single group when an ID is provided, or a ListResponse when no ID is given. ListResponse shape: { schemas, totalResults, startIndex, itemsPerPage, Resources: [Group] }. Filtering is supported on list requests via the filter query parameter; only the displayName attribute is supported (eq and co operators).",
         "parameters": [
           {
             "type": "string",
@@ -252,7 +252,7 @@
             "schema": {
               "$ref": "#/definitions/GroupListResponse"
             },
-            "description": "Success"
+            "description": "Success - Returns a single GroupResponse when id is provided, or a GroupListResponse when id is omitted"
           }
         }
       },
@@ -355,7 +355,7 @@
       "get": {
         "summary": "Get a user or list of users",
         "operationId": "getV2UsersId",
-        "description": "Returns a user by ID or a list of users based on SCIM filtering",
+        "description": "Returns a user by ID or a list of users based on SCIM filtering. Supports optional attributes parameter to request specific fields. When no ID is provided, returns a ListResponse with totalResults, startIndex, itemsPerPage, and a Resources array. Maximum page size (count) is 50 for admin and user scope; directoryKey callers may use up to 1000. Opt-in fields for single-user GET only: `urn:ietf:params:scim:schemas:extension:fd:2.0:User:managerChain` returns the management hierarchy as `{ items, truncated }` (root first, direct manager last; access-controlled per sharedAttributes). `urn:ietf:params:scim:schemas:extension:fd:2.0:User:directReportCount` returns the number of direct reports.",
         "parameters": [
           {
             "type": "string",
@@ -436,7 +436,7 @@
                 }
               ]
             },
-            "description": "Success - Returns a single user when id is provided, or a list of users when id is omitted"
+            "description": "Success - Returns a single user when id is provided, or a ListResponse when id is omitted. ListResponse shape: { schemas, totalResults, startIndex, itemsPerPage, Resources: [User] }"
           }
         }
       },
@@ -553,7 +553,7 @@
       "post": {
         "summary": "Bulk User operations",
         "operationId": "postV2Bulk",
-        "description": "Allows multiple SCIM User operations (create, update, delete) in a single request",
+        "description": "Allows multiple SCIM User operations (create, update, delete) in a single request. Per RFC 7644, bulkId is required for POST operations and optional for all other methods. DELETE operations resolve the target user from the path (/Users/{id}) or, for backwards compatibility, from data.id if the path does not contain a valid ID.",
         "parameters": [
           {
             "in": "body",
@@ -821,7 +821,7 @@
         "schemas": [
           "urn:ietf:params:scim:schemas:core:2.0:ServiceProviderConfig"
         ],
-        "documentationUri": "https://docs.federated.directory/developer/getting-started",
+        "documentationUri": "https://help.federated.directory/developer/getting-started",
         "patch": {
           "supported": true
         },
@@ -848,7 +848,7 @@
             "name": "OAuth Bearer Token",
             "description": "Authentication scheme using the OAuth Bearer Token Standard",
             "specUri": "http://www.rfc-editor.org/info/rfc6750",
-            "documentationUri": "https://docs.federated.directory/developer/getting-started",
+            "documentationUri": "https://help.federated.directory/developer/getting-started",
             "type": "oauthbearertoken",
             "primary": true
           }
@@ -1530,6 +1530,88 @@
         }
       }
     },
+    "ManagerChainEntryPhoto": {
+      "type": "object",
+      "properties": {
+        "value": {
+          "type": "string",
+          "minLength": 0,
+          "maxLength": 200,
+          "pattern": "^(https?\\:\\/\\/(\\S+\\.[^/\\s]+(\\/\\S+|\\/|)))$"
+        },
+        "type": {
+          "$ref": "#/definitions/PhotoTypeEnum"
+        },
+        "primary": {
+          "type": "boolean"
+        }
+      },
+      "required": [
+        "type"
+      ]
+    },
+    "ManagerChainEntryPhotosArray": {
+      "type": "array",
+      "maxItems": 2,
+      "items": {
+        "$ref": "#/definitions/ManagerChainEntryPhoto"
+      }
+    },
+    "ManagerChainEntry": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string",
+          "x-format": {
+            "guid": true
+          }
+        },
+        "displayName": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 200
+        },
+        "directReportCount": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "title": {
+          "type": "string",
+          "minLength": 0,
+          "maxLength": 200
+        },
+        "division": {
+          "type": "string",
+          "minLength": 0,
+          "maxLength": 200
+        },
+        "department": {
+          "type": "string",
+          "minLength": 0,
+          "maxLength": 200
+        },
+        "photos": {
+          "$ref": "#/definitions/ManagerChainEntryPhotosArray"
+        }
+      }
+    },
+    "ManagerChainItems": {
+      "type": "array",
+      "items": {
+        "$ref": "#/definitions/ManagerChainEntry"
+      }
+    },
+    "ManagerChain": {
+      "type": "object",
+      "properties": {
+        "items": {
+          "$ref": "#/definitions/ManagerChainItems"
+        },
+        "truncated": {
+          "type": "boolean"
+        }
+      }
+    },
     "FdUserExtension": {
       "type": "object",
       "properties": {
@@ -1570,6 +1652,13 @@
         },
         "chatMethods": {
           "$ref": "#/definitions/ChatMethods"
+        },
+        "directReportCount": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "managerChain": {
+          "$ref": "#/definitions/ManagerChain"
         }
       }
     },
@@ -1581,15 +1670,12 @@
           "urn:ietf:params:scim:schemas:extension:enterprise:2.0:User",
           "urn:ietf:params:scim:schemas:extension:fd:2.0:User"
         ],
+        "id": "c3a26dd3-27a0-4dec-a2ac-ce211e105f97",
         "externalId": "701984",
         "userName": "bjensen@example.com",
         "name": {
-          "formatted": "Ms. Barbara J Jensen, III",
           "familyName": "Jensen",
-          "givenName": "Barbara",
-          "middleName": "Jane",
-          "honorificPrefix": "Ms.",
-          "honorificSuffix": "III"
+          "givenName": "Barbara"
         },
         "displayName": "Barbara Jensen",
         "nickName": "Babs",
@@ -1636,12 +1722,30 @@
             "type": "mobile"
           }
         ],
+        "photos": [
+          {
+            "value": "https://photos.example.com/bjensen_photo.jpg",
+            "type": "photo",
+            "primary": true
+          },
+          {
+            "value": "https://photos.example.com/bjensen_thumbnail.jpg",
+            "type": "thumbnail"
+          }
+        ],
         "userType": "Employee",
         "title": "Tour Guide",
         "preferredLanguage": "en-US",
         "locale": "en-US",
         "timezone": "America/Los_Angeles",
         "active": true,
+        "groups": [
+          {
+            "value": "e9e30dba-f08f-4109-8486-d5c6a331660a",
+            "ref": "https://api.federated.directory/v2/Groups/e9e30dba-f08f-4109-8486-d5c6a331660a",
+            "display": "Tour Guides"
+          }
+        ],
         "urn:ietf:params:scim:schemas:extension:enterprise:2.0:User": {
           "employeeNumber": "701984",
           "costCenter": "4130",
@@ -1656,7 +1760,16 @@
         },
         "urn:ietf:params:scim:schemas:extension:fd:2.0:User": {
           "description": "Full time tour guide",
-          "custom01": "Badge Number: 12345"
+          "directoryId": "f819cbe8-5e6e-4c82-b8c6-a0d4a3fc5c27",
+          "companyId": "a4a4e7f8-42cc-4f3e-bd3f-4c3a88e8e4f0",
+          "custom01": "Badge Number: 12345",
+          "directReportCount": 3
+        },
+        "meta": {
+          "resourceType": "User",
+          "created": "2023-01-23T04:56:22Z",
+          "lastModified": "2023-05-13T11:05:29Z",
+          "location": "https://api.federated.directory/v2/Users/c3a26dd3-27a0-4dec-a2ac-ce211e105f97"
         }
       },
       "properties": {
@@ -1941,6 +2054,9 @@
         "$ref": "#/definitions/GroupLogo"
       }
     },
+    "fqlon": {
+      "type": "object"
+    },
     "FdGroupExtension": {
       "type": "object",
       "properties": {
@@ -1948,6 +2064,12 @@
           "type": "string",
           "minLength": 0,
           "maxLength": 250
+        },
+        "groupRole": {
+          "$ref": "#/definitions/GroupRoleEnum"
+        },
+        "assignedByFilter": {
+          "type": "boolean"
         },
         "sharedAttributes": {
           "$ref": "#/definitions/SharedAttributesScimArray"
@@ -1962,6 +2084,9 @@
           "type": "string",
           "minLength": 0,
           "maxLength": 255
+        },
+        "fqlon": {
+          "$ref": "#/definitions/fqlon"
         }
       }
     },
@@ -1969,21 +2094,70 @@
       "type": "object",
       "example": {
         "schemas": [
-          "urn:ietf:params:scim:schemas:core:2.0:Group"
+          "urn:ietf:params:scim:schemas:core:2.0:Group",
+          "urn:ietf:params:scim:schemas:extension:fd:2.0:Group"
         ],
+        "id": "e9e30dba-f08f-4109-8486-d5c6a331660a",
         "displayName": "Tour Guides",
         "members": [
           {
             "value": "2819c223-7f76-453a-919d-413861904646",
             "ref": "https://api.federated.directory/v2/Users/2819c223-7f76-453a-919d-413861904646",
-            "display": "Babs Jensen"
+            "display": "Babs Jensen",
+            "groupRole": "owner",
+            "photos": [
+              {
+                "value": "https://photos.example.com/bjensen_photo.jpg",
+                "type": "photo"
+              },
+              {
+                "value": "https://photos.example.com/bjensen_thumbnail.jpg",
+                "type": "thumbnail"
+              }
+            ]
           },
           {
             "value": "902c246b-6245-4190-8e05-0018c3524c9a",
             "ref": "https://api.federated.directory/v2/Users/902c246b-6245-4190-8e05-0018c3524c9a",
-            "display": "Mandy Pepperidge"
+            "display": "Mandy Pepperidge",
+            "groupRole": "member",
+            "photos": [
+              {
+                "value": "https://photos.example.com/mandy_photo.jpg",
+                "type": "photo"
+              }
+            ]
           }
-        ]
+        ],
+        "urn:ietf:params:scim:schemas:extension:fd:2.0:Group": {
+          "description": "All certified tour guides",
+          "groupRole": "owner",
+          "assignedByFilter": false,
+          "sharedAttributes": [
+            "displayName",
+            "title",
+            "photos",
+            "department"
+          ],
+          "logos": [
+            {
+              "value": "https://cdn.example.com/groups/e9e30dba-f08f-4109-8486-d5c6a331660a/logo.jpg",
+              "type": "logo",
+              "primary": true
+            },
+            {
+              "value": "https://cdn.example.com/groups/e9e30dba-f08f-4109-8486-d5c6a331660a/thumb/logo.jpg",
+              "type": "thumbnail"
+            }
+          ],
+          "fql": null
+        },
+        "meta": {
+          "resourceType": "Group",
+          "created": "2023-01-23T04:56:22Z",
+          "lastModified": "2023-05-13T11:05:29Z",
+          "location": "https://api.federated.directory/v2/Groups/e9e30dba-f08f-4109-8486-d5c6a331660a"
+        }
       },
       "properties": {
         "schemas": {
@@ -2031,21 +2205,70 @@
         "Resources": [
           {
             "schemas": [
-              "urn:ietf:params:scim:schemas:core:2.0:Group"
+              "urn:ietf:params:scim:schemas:core:2.0:Group",
+              "urn:ietf:params:scim:schemas:extension:fd:2.0:Group"
             ],
+            "id": "e9e30dba-f08f-4109-8486-d5c6a331660a",
             "displayName": "Tour Guides",
             "members": [
               {
                 "value": "2819c223-7f76-453a-919d-413861904646",
                 "ref": "https://api.federated.directory/v2/Users/2819c223-7f76-453a-919d-413861904646",
-                "display": "Babs Jensen"
+                "display": "Babs Jensen",
+                "groupRole": "owner",
+                "photos": [
+                  {
+                    "value": "https://photos.example.com/bjensen_photo.jpg",
+                    "type": "photo"
+                  },
+                  {
+                    "value": "https://photos.example.com/bjensen_thumbnail.jpg",
+                    "type": "thumbnail"
+                  }
+                ]
               },
               {
                 "value": "902c246b-6245-4190-8e05-0018c3524c9a",
                 "ref": "https://api.federated.directory/v2/Users/902c246b-6245-4190-8e05-0018c3524c9a",
-                "display": "Mandy Pepperidge"
+                "display": "Mandy Pepperidge",
+                "groupRole": "member",
+                "photos": [
+                  {
+                    "value": "https://photos.example.com/mandy_photo.jpg",
+                    "type": "photo"
+                  }
+                ]
               }
-            ]
+            ],
+            "urn:ietf:params:scim:schemas:extension:fd:2.0:Group": {
+              "description": "All certified tour guides",
+              "groupRole": "owner",
+              "assignedByFilter": false,
+              "sharedAttributes": [
+                "displayName",
+                "title",
+                "photos",
+                "department"
+              ],
+              "logos": [
+                {
+                  "value": "https://cdn.example.com/groups/e9e30dba-f08f-4109-8486-d5c6a331660a/logo.jpg",
+                  "type": "logo",
+                  "primary": true
+                },
+                {
+                  "value": "https://cdn.example.com/groups/e9e30dba-f08f-4109-8486-d5c6a331660a/thumb/logo.jpg",
+                  "type": "thumbnail"
+                }
+              ],
+              "fql": null
+            },
+            "meta": {
+              "resourceType": "Group",
+              "created": "2023-01-23T04:56:22Z",
+              "lastModified": "2023-05-13T11:05:29Z",
+              "location": "https://api.federated.directory/v2/Groups/e9e30dba-f08f-4109-8486-d5c6a331660a"
+            }
           }
         ]
       },
@@ -3566,21 +3789,70 @@
       "type": "object",
       "example": {
         "schemas": [
-          "urn:ietf:params:scim:schemas:core:2.0:Group"
+          "urn:ietf:params:scim:schemas:core:2.0:Group",
+          "urn:ietf:params:scim:schemas:extension:fd:2.0:Group"
         ],
+        "id": "e9e30dba-f08f-4109-8486-d5c6a331660a",
         "displayName": "Tour Guides",
         "members": [
           {
             "value": "2819c223-7f76-453a-919d-413861904646",
             "ref": "https://api.federated.directory/v2/Users/2819c223-7f76-453a-919d-413861904646",
-            "display": "Babs Jensen"
+            "display": "Babs Jensen",
+            "groupRole": "owner",
+            "photos": [
+              {
+                "value": "https://photos.example.com/bjensen_photo.jpg",
+                "type": "photo"
+              },
+              {
+                "value": "https://photos.example.com/bjensen_thumbnail.jpg",
+                "type": "thumbnail"
+              }
+            ]
           },
           {
             "value": "902c246b-6245-4190-8e05-0018c3524c9a",
             "ref": "https://api.federated.directory/v2/Users/902c246b-6245-4190-8e05-0018c3524c9a",
-            "display": "Mandy Pepperidge"
+            "display": "Mandy Pepperidge",
+            "groupRole": "member",
+            "photos": [
+              {
+                "value": "https://photos.example.com/mandy_photo.jpg",
+                "type": "photo"
+              }
+            ]
           }
-        ]
+        ],
+        "urn:ietf:params:scim:schemas:extension:fd:2.0:Group": {
+          "description": "All certified tour guides",
+          "groupRole": "owner",
+          "assignedByFilter": false,
+          "sharedAttributes": [
+            "displayName",
+            "title",
+            "photos",
+            "department"
+          ],
+          "logos": [
+            {
+              "value": "https://cdn.example.com/groups/e9e30dba-f08f-4109-8486-d5c6a331660a/logo.jpg",
+              "type": "logo",
+              "primary": true
+            },
+            {
+              "value": "https://cdn.example.com/groups/e9e30dba-f08f-4109-8486-d5c6a331660a/thumb/logo.jpg",
+              "type": "thumbnail"
+            }
+          ],
+          "fql": null
+        },
+        "meta": {
+          "resourceType": "Group",
+          "created": "2023-01-23T04:56:22Z",
+          "lastModified": "2023-05-13T11:05:29Z",
+          "location": "https://api.federated.directory/v2/Groups/e9e30dba-f08f-4109-8486-d5c6a331660a"
+        }
       },
       "properties": {
         "schemas": {
@@ -3618,15 +3890,12 @@
           "urn:ietf:params:scim:schemas:extension:enterprise:2.0:User",
           "urn:ietf:params:scim:schemas:extension:fd:2.0:User"
         ],
+        "id": "c3a26dd3-27a0-4dec-a2ac-ce211e105f97",
         "externalId": "701984",
         "userName": "bjensen@example.com",
         "name": {
-          "formatted": "Ms. Barbara J Jensen, III",
           "familyName": "Jensen",
-          "givenName": "Barbara",
-          "middleName": "Jane",
-          "honorificPrefix": "Ms.",
-          "honorificSuffix": "III"
+          "givenName": "Barbara"
         },
         "displayName": "Barbara Jensen",
         "nickName": "Babs",
@@ -3673,12 +3942,30 @@
             "type": "mobile"
           }
         ],
+        "photos": [
+          {
+            "value": "https://photos.example.com/bjensen_photo.jpg",
+            "type": "photo",
+            "primary": true
+          },
+          {
+            "value": "https://photos.example.com/bjensen_thumbnail.jpg",
+            "type": "thumbnail"
+          }
+        ],
         "userType": "Employee",
         "title": "Tour Guide",
         "preferredLanguage": "en-US",
         "locale": "en-US",
         "timezone": "America/Los_Angeles",
         "active": true,
+        "groups": [
+          {
+            "value": "e9e30dba-f08f-4109-8486-d5c6a331660a",
+            "ref": "https://api.federated.directory/v2/Groups/e9e30dba-f08f-4109-8486-d5c6a331660a",
+            "display": "Tour Guides"
+          }
+        ],
         "urn:ietf:params:scim:schemas:extension:enterprise:2.0:User": {
           "employeeNumber": "701984",
           "costCenter": "4130",
@@ -3693,7 +3980,16 @@
         },
         "urn:ietf:params:scim:schemas:extension:fd:2.0:User": {
           "description": "Full time tour guide",
-          "custom01": "Badge Number: 12345"
+          "directoryId": "f819cbe8-5e6e-4c82-b8c6-a0d4a3fc5c27",
+          "companyId": "a4a4e7f8-42cc-4f3e-bd3f-4c3a88e8e4f0",
+          "custom01": "Badge Number: 12345",
+          "directReportCount": 3
+        },
+        "meta": {
+          "resourceType": "User",
+          "created": "2023-01-23T04:56:22Z",
+          "lastModified": "2023-05-13T11:05:29Z",
+          "location": "https://api.federated.directory/v2/Users/c3a26dd3-27a0-4dec-a2ac-ce211e105f97"
         }
       },
       "properties": {
@@ -3971,15 +4267,12 @@
           "urn:ietf:params:scim:schemas:extension:enterprise:2.0:User",
           "urn:ietf:params:scim:schemas:extension:fd:2.0:User"
         ],
+        "id": "c3a26dd3-27a0-4dec-a2ac-ce211e105f97",
         "externalId": "701984",
         "userName": "bjensen@example.com",
         "name": {
-          "formatted": "Ms. Barbara J Jensen, III",
           "familyName": "Jensen",
-          "givenName": "Barbara",
-          "middleName": "Jane",
-          "honorificPrefix": "Ms.",
-          "honorificSuffix": "III"
+          "givenName": "Barbara"
         },
         "displayName": "Barbara Jensen",
         "nickName": "Babs",
@@ -4026,12 +4319,30 @@
             "type": "mobile"
           }
         ],
+        "photos": [
+          {
+            "value": "https://photos.example.com/bjensen_photo.jpg",
+            "type": "photo",
+            "primary": true
+          },
+          {
+            "value": "https://photos.example.com/bjensen_thumbnail.jpg",
+            "type": "thumbnail"
+          }
+        ],
         "userType": "Employee",
         "title": "Tour Guide",
         "preferredLanguage": "en-US",
         "locale": "en-US",
         "timezone": "America/Los_Angeles",
         "active": true,
+        "groups": [
+          {
+            "value": "e9e30dba-f08f-4109-8486-d5c6a331660a",
+            "ref": "https://api.federated.directory/v2/Groups/e9e30dba-f08f-4109-8486-d5c6a331660a",
+            "display": "Tour Guides"
+          }
+        ],
         "urn:ietf:params:scim:schemas:extension:enterprise:2.0:User": {
           "employeeNumber": "701984",
           "costCenter": "4130",
@@ -4046,7 +4357,16 @@
         },
         "urn:ietf:params:scim:schemas:extension:fd:2.0:User": {
           "description": "Full time tour guide",
-          "custom01": "Badge Number: 12345"
+          "directoryId": "f819cbe8-5e6e-4c82-b8c6-a0d4a3fc5c27",
+          "companyId": "a4a4e7f8-42cc-4f3e-bd3f-4c3a88e8e4f0",
+          "custom01": "Badge Number: 12345",
+          "directReportCount": 3
+        },
+        "meta": {
+          "resourceType": "User",
+          "created": "2023-01-23T04:56:22Z",
+          "lastModified": "2023-05-13T11:05:29Z",
+          "location": "https://api.federated.directory/v2/Users/c3a26dd3-27a0-4dec-a2ac-ce211e105f97"
         }
       },
       "properties": {
@@ -4951,6 +5271,88 @@
         }
       }
     },
+    "ManagerChainEntryPhoto": {
+      "type": "object",
+      "properties": {
+        "value": {
+          "type": "string",
+          "minLength": 0,
+          "maxLength": 200,
+          "pattern": "^(https?\\:\\/\\/(\\S+\\.[^/\\s]+(\\/\\S+|\\/|)))$"
+        },
+        "type": {
+          "$ref": "#/x-alt-definitions/PhotoTypeEnum"
+        },
+        "primary": {
+          "type": "boolean"
+        }
+      },
+      "required": [
+        "type"
+      ]
+    },
+    "ManagerChainEntryPhotosArray": {
+      "type": "array",
+      "maxItems": 2,
+      "items": {
+        "$ref": "#/x-alt-definitions/ManagerChainEntryPhoto"
+      }
+    },
+    "ManagerChainEntry": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string",
+          "x-format": {
+            "guid": true
+          }
+        },
+        "displayName": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 200
+        },
+        "directReportCount": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "title": {
+          "type": "string",
+          "minLength": 0,
+          "maxLength": 200
+        },
+        "division": {
+          "type": "string",
+          "minLength": 0,
+          "maxLength": 200
+        },
+        "department": {
+          "type": "string",
+          "minLength": 0,
+          "maxLength": 200
+        },
+        "photos": {
+          "$ref": "#/x-alt-definitions/ManagerChainEntryPhotosArray"
+        }
+      }
+    },
+    "ManagerChainItems": {
+      "type": "array",
+      "items": {
+        "$ref": "#/x-alt-definitions/ManagerChainEntry"
+      }
+    },
+    "ManagerChain": {
+      "type": "object",
+      "properties": {
+        "items": {
+          "$ref": "#/x-alt-definitions/ManagerChainItems"
+        },
+        "truncated": {
+          "type": "boolean"
+        }
+      }
+    },
     "FdUserExtension": {
       "type": "object",
       "properties": {
@@ -4991,6 +5393,13 @@
         },
         "chatMethods": {
           "$ref": "#/x-alt-definitions/ChatMethods"
+        },
+        "directReportCount": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "managerChain": {
+          "$ref": "#/x-alt-definitions/ManagerChain"
         }
       }
     },
@@ -5002,15 +5411,12 @@
           "urn:ietf:params:scim:schemas:extension:enterprise:2.0:User",
           "urn:ietf:params:scim:schemas:extension:fd:2.0:User"
         ],
+        "id": "c3a26dd3-27a0-4dec-a2ac-ce211e105f97",
         "externalId": "701984",
         "userName": "bjensen@example.com",
         "name": {
-          "formatted": "Ms. Barbara J Jensen, III",
           "familyName": "Jensen",
-          "givenName": "Barbara",
-          "middleName": "Jane",
-          "honorificPrefix": "Ms.",
-          "honorificSuffix": "III"
+          "givenName": "Barbara"
         },
         "displayName": "Barbara Jensen",
         "nickName": "Babs",
@@ -5057,12 +5463,30 @@
             "type": "mobile"
           }
         ],
+        "photos": [
+          {
+            "value": "https://photos.example.com/bjensen_photo.jpg",
+            "type": "photo",
+            "primary": true
+          },
+          {
+            "value": "https://photos.example.com/bjensen_thumbnail.jpg",
+            "type": "thumbnail"
+          }
+        ],
         "userType": "Employee",
         "title": "Tour Guide",
         "preferredLanguage": "en-US",
         "locale": "en-US",
         "timezone": "America/Los_Angeles",
         "active": true,
+        "groups": [
+          {
+            "value": "e9e30dba-f08f-4109-8486-d5c6a331660a",
+            "ref": "https://api.federated.directory/v2/Groups/e9e30dba-f08f-4109-8486-d5c6a331660a",
+            "display": "Tour Guides"
+          }
+        ],
         "urn:ietf:params:scim:schemas:extension:enterprise:2.0:User": {
           "employeeNumber": "701984",
           "costCenter": "4130",
@@ -5077,7 +5501,16 @@
         },
         "urn:ietf:params:scim:schemas:extension:fd:2.0:User": {
           "description": "Full time tour guide",
-          "custom01": "Badge Number: 12345"
+          "directoryId": "f819cbe8-5e6e-4c82-b8c6-a0d4a3fc5c27",
+          "companyId": "a4a4e7f8-42cc-4f3e-bd3f-4c3a88e8e4f0",
+          "custom01": "Badge Number: 12345",
+          "directReportCount": 3
+        },
+        "meta": {
+          "resourceType": "User",
+          "created": "2023-01-23T04:56:22Z",
+          "lastModified": "2023-05-13T11:05:29Z",
+          "location": "https://api.federated.directory/v2/Users/c3a26dd3-27a0-4dec-a2ac-ce211e105f97"
         }
       },
       "properties": {
@@ -5666,6 +6099,9 @@
         "$ref": "#/x-alt-definitions/GroupLogo"
       }
     },
+    "fqlon": {
+      "type": "object"
+    },
     "FdGroupExtension": {
       "type": "object",
       "properties": {
@@ -5673,6 +6109,12 @@
           "type": "string",
           "minLength": 0,
           "maxLength": 250
+        },
+        "groupRole": {
+          "$ref": "#/x-alt-definitions/GroupRoleEnum"
+        },
+        "assignedByFilter": {
+          "type": "boolean"
         },
         "sharedAttributes": {
           "$ref": "#/x-alt-definitions/SharedAttributesScimArray"
@@ -5687,6 +6129,9 @@
           "type": "string",
           "minLength": 0,
           "maxLength": 255
+        },
+        "fqlon": {
+          "$ref": "#/x-alt-definitions/fqlon"
         }
       }
     },
@@ -5694,21 +6139,70 @@
       "type": "object",
       "example": {
         "schemas": [
-          "urn:ietf:params:scim:schemas:core:2.0:Group"
+          "urn:ietf:params:scim:schemas:core:2.0:Group",
+          "urn:ietf:params:scim:schemas:extension:fd:2.0:Group"
         ],
+        "id": "e9e30dba-f08f-4109-8486-d5c6a331660a",
         "displayName": "Tour Guides",
         "members": [
           {
             "value": "2819c223-7f76-453a-919d-413861904646",
             "ref": "https://api.federated.directory/v2/Users/2819c223-7f76-453a-919d-413861904646",
-            "display": "Babs Jensen"
+            "display": "Babs Jensen",
+            "groupRole": "owner",
+            "photos": [
+              {
+                "value": "https://photos.example.com/bjensen_photo.jpg",
+                "type": "photo"
+              },
+              {
+                "value": "https://photos.example.com/bjensen_thumbnail.jpg",
+                "type": "thumbnail"
+              }
+            ]
           },
           {
             "value": "902c246b-6245-4190-8e05-0018c3524c9a",
             "ref": "https://api.federated.directory/v2/Users/902c246b-6245-4190-8e05-0018c3524c9a",
-            "display": "Mandy Pepperidge"
+            "display": "Mandy Pepperidge",
+            "groupRole": "member",
+            "photos": [
+              {
+                "value": "https://photos.example.com/mandy_photo.jpg",
+                "type": "photo"
+              }
+            ]
           }
-        ]
+        ],
+        "urn:ietf:params:scim:schemas:extension:fd:2.0:Group": {
+          "description": "All certified tour guides",
+          "groupRole": "owner",
+          "assignedByFilter": false,
+          "sharedAttributes": [
+            "displayName",
+            "title",
+            "photos",
+            "department"
+          ],
+          "logos": [
+            {
+              "value": "https://cdn.example.com/groups/e9e30dba-f08f-4109-8486-d5c6a331660a/logo.jpg",
+              "type": "logo",
+              "primary": true
+            },
+            {
+              "value": "https://cdn.example.com/groups/e9e30dba-f08f-4109-8486-d5c6a331660a/thumb/logo.jpg",
+              "type": "thumbnail"
+            }
+          ],
+          "fql": null
+        },
+        "meta": {
+          "resourceType": "Group",
+          "created": "2023-01-23T04:56:22Z",
+          "lastModified": "2023-05-13T11:05:29Z",
+          "location": "https://api.federated.directory/v2/Groups/e9e30dba-f08f-4109-8486-d5c6a331660a"
+        }
       },
       "properties": {
         "schemas": {

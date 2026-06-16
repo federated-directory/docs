@@ -63,3 +63,30 @@ Search for contacts in a specific department. The selected department will be an
 
 **Custom attributes**
 You administrator can enable some company specific attributes on users. You will be able to filter on those attributes as well.
+
+## Organizational Chart (Org Chart)
+
+Federated Directory features a dynamic, interactive Organizational Chart (Org Chart) that allows you to visually explore reporting structures and management chains across your organization and federated partners.
+
+You can access the Org Chart by selecting any contact and clicking on the **Org chart** tab on their contact details card.
+
+<img src="/images/search-org-chart.webp" alt="Interactive Org Chart inside Federated Directory" /> <br>
+
+### Dynamic 3-Level Explorer View
+The Org Chart utilizes a centered explorer design to display reporting relationships at a glance:
+1. **Management Chain (Managers Above):** Displayed above the focused contact, this shows the direct chain of managers leading up to the organization's root or top-level leader.
+2. **Focused Contact (Center):** Highlighted in the center with a distinct blue border, showing detailed information such as department, division, and location. It features the **Actions** button for advanced shortcuts.
+3. **Direct Reports (Below):** Presented in a grid showing direct reports with their names, avatars, and titles. For large teams, direct reports are loaded incrementally (20 at a time) with a **Load more** button to keep the view clean and easy to read.
+
+### Seamless Navigation
+- **Browse Reporting Trees:** Click any card in the managers chain above or any direct report card below to instantly shift the focus to that person. The org chart smoothly transitions to show their position in the hierarchy.
+- **Deep Linking & Browser History:** As you browse, your web browser's address bar updates automatically. You can copy the link at any point to share a **deep link** directly to that specific person's org chart node, and use your browser's **Back** and **Forward** buttons to navigate your browsing history.
+
+### Quick Actions & Directory Filters
+Selecting the **Actions** button on the focused contact card opens a menu with powerful shortcuts that connect the Org Chart back to the main directory search:
+- **Open Profile:** Open the full contact details page for the selected person.
+- **Filter on Manager:** Instantly filter the directory to show all contacts who report to this person's manager.
+- **Filter on this manager:** Filter the directory to list all direct reports of this person.
+- **Filter on Job Title:** Filter the directory to find everyone with this exact job title.
+- **Filter on Division:** Filter the directory to show all contacts within this division.
+- **Filter on Department:** Filter the directory to show all contacts within this department.
