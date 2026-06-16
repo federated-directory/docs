@@ -11,7 +11,10 @@ const configuration = computed(() => ({
   hideModels: false,
   hideSearch: true,
   darkMode: isDark.value,
-  withDefaultFonts: false // We use our own font in custom.css
+  withDefaultFonts: false, // We use our own font in custom.css
+  agent: {
+    disabled: true
+  }
 }))
 </script>
 
@@ -23,7 +26,7 @@ const configuration = computed(() => ({
         <span class="vpi-download"></span> Download OpenAPI Spec
       </a>
     </div>
-    
+
     <div class="scalar-api-reference">
       <ApiReference :configuration="configuration" />
     </div>

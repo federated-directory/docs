@@ -62,12 +62,12 @@ const filteredSpec = computed(() => {
 
   // Update global metadata to be minimal but valid
   spec.tags = [{ name: '_hidden_', description: '' }]
-  spec.info = { 
-    title: 'Endpoint View', 
+  spec.info = {
+    title: 'Endpoint View',
     version: spec.info?.version || '1.0.0',
-    description: '' 
+    description: ''
   }
-  
+
   return spec
 })
 
@@ -82,7 +82,10 @@ const configuration = computed(() => ({
   showTestRequestButton: true,
   darkMode: isDark.value,
   withDefaultFonts: false,
-  defaultOpenAllTags: true
+  defaultOpenAllTags: true,
+  agent: {
+    disabled: true
+  }
 }))
 </script>
 
