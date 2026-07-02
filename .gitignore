@@ -2,6 +2,10 @@ node_modules
 docs/.vitepress/dist
 docs/.vitepress/cache
 
+# Generated at build time by scripts/sanitize-spec.js (fetched live from the API)
+docs/public/swagger.json
+docs/developer/api-search.md
+
 # macOS
 .DS_Store
 **/.DS_Store

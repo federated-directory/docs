@@ -37,7 +37,7 @@ It implements the [MCP standard](https://modelcontextprotocol.io) using JSON-RPC
 Use the MCP to power assistants or internal applications that help employees:
 
 - find colleagues by name, department, or title,
-- identify who someone's manager is,
+- identify who someone's manager is, or visualize their full management chain,
 - browse available departments, divisions, or titles.
 
 ### Agentic workflows
@@ -56,9 +56,11 @@ A reliable agent workflow typically looks like this:
 3. retrieve the full contact by ID,
 4. use organizational values to validate or continue the workflow.
 
+Agents can also walk the org chart directly — for example, to find out who a contact reports to, or how many people report to them — using the manager chain tool described below.
+
 ## Capabilities
 
-The MCP exposes three tools and a set of read-only resources.
+The MCP exposes four tools and a set of read-only resources.
 
 ### Search contacts
 
@@ -72,9 +74,19 @@ Retrieve a single contact by their Federated Directory user ID. Use this after a
 
 List distinct values for fields such as department, division, title, company, and custom fields. Useful for validating input or giving agents a grounded list of real values to reason over.
 
+### Get manager chain (org chart)
+
+Retrieve the management chain for a contact — the path from the root manager down to their direct manager, optionally including the contact themselves. This is powered by the same organizational chart data available in the [Users API](/developer/users-api) via the `managerChain` attribute.
+
+In MCP Apps-capable hosts (Claude Desktop, ChatGPT, VS Code, Goose, Postman), this tool also renders an **interactive org chart widget** inline in the conversation — a sandboxed HTML view of the management chain — instead of just a text response. Hosts that don't support MCP Apps still get a plain structured/text result, so the tool works everywhere; the interactive chart is a bonus in supporting clients.
+
+If access control limits how much of the chain a caller is allowed to see (based on the group and shared attributes configured for their API key), the result indicates that the chain was truncated rather than exposing managers outside the caller's visibility.
+
 ### Resources
 
 The MCP also exposes read-only resources for organizational reference data such as departments, divisions, companies, and titles. Tenants with custom labels will have those surfaced as additional dynamic resources.
+
+In addition, MCP Apps-capable hosts can read a `ui://org-chart` resource — the self-contained HTML app used to render the interactive org chart for the **Get manager chain** tool. Hosts without MCP Apps support simply ignore this resource.
 
 For the full list of supported fields, attributes, and request/response schemas, see the [API reference](/developer/api-reference#tag/mcp).
 
