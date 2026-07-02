@@ -21,9 +21,9 @@
   },
   "homepage": "https://github.com/federated-directory/docs#readme",
   "devDependencies": {
-    "@scalar/api-reference": "^1.47.0",
-    "playwright": "^1.59.1",
-    "posthog-js": "^1.367.0",
+    "@scalar/api-reference": "^1.62.2",
+    "playwright": "^1.61.1",
+    "posthog-js": "^1.396.5",
     "sitemap": "^9.0.1",
     "vitepress": "^1.6.4"
   }
