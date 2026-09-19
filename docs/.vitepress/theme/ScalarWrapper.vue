@@ -1,15 +1,62 @@
 <script setup>
 import { ApiReference } from '@scalar/api-reference'
 import { useData } from 'vitepress'
-import { computed } from 'vue'
+import { computed, onMounted, onBeforeUnmount, useTemplateRef } from 'vue'
 
 const { isDark } = useData()
+const wrapperRef = useTemplateRef('wrapper')
+
+// Scalar only resolves the initial `#tag/...` hash (and scrolls to it) once,
+// on mount. It doesn't react to hash-only link clicks within its own
+// rendered Markdown content (e.g. "See how to [obtain a token](#tag/oauth2)"),
+// so those links update the URL but never actually scroll anywhere unless
+// the page is fully reloaded. We patch that in here: intercept clicks on
+// same-page `#...` links inside the wrapper and scroll to the matching
+// section ourselves. Scalar prefixes rendered section/operation ids with an
+// internal document slug (e.g. "api-1/tag/oauth2"), so we match by suffix
+// rather than requiring an exact id match.
+function scrollToHash(hash) {
+  if (!hash) return false
+  const target = document.getElementById(hash) || document.querySelector(`[id$="/${hash}"]`)
+  if (!target) return false
+  target.scrollIntoView({ behavior: 'smooth', block: 'start' })
+  return true
+}
+
+function handleClick(event) {
+  const link = event.target.closest('a[href^="#"], a[href*="#"]')
+  if (!link) return
+
+  const href = link.getAttribute('href')
+  const hashIndex = href.indexOf('#')
+  if (hashIndex === -1) return
+  const hash = href.slice(hashIndex + 1)
+  const isSamePageLink = href.startsWith('#') || href === window.location.pathname + '#' + hash
+  if (!isSamePageLink || !hash) return
+
+  if (scrollToHash(hash)) {
+    event.preventDefault()
+    history.pushState(null, '', `#${hash}`)
+  }
+}
+
+onMounted(() => {
+  wrapperRef.value?.addEventListener('click', handleClick)
+})
+
+onBeforeUnmount(() => {
+  wrapperRef.value?.removeEventListener('click', handleClick)
+})
 
 const configuration = computed(() => ({
   spec: { url: '/swagger.json' },
   theme: 'default',
   hideModels: false,
   hideSearch: true,
+  // Scalar's own sidebar duplicates the VitePress sidebar and its
+  // accordion/flyout behavior was causing menus to flicker/appear-disappear
+  // unexpectedly. We rely solely on the VitePress left sidebar for navigation.
+  showSidebar: false,
   darkMode: isDark.value,
   withDefaultFonts: false, // We use our own font in custom.css
   agent: {
@@ -19,7 +66,7 @@ const configuration = computed(() => ({
 </script>
 
 <template>
-  <div class="scalar-api-reference-wrapper">
+  <div class="scalar-api-reference-wrapper" ref="wrapper">
     <!-- Custom Download Button to replace the buggy default one -->
     <div class="custom-download-actions">
       <a href="/swagger.json" download="openapi.json" class="vp-button-download">
