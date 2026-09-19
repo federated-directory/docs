@@ -62,8 +62,8 @@ A role determines the authorizations given to an access token.
 
 There are two sort of keys.
 
-1. [Directory key](#create-a-directory-key) (role = directoryKey)
-2. [API key](#create-an-api-key) (role = admin)
+1. **Directory key** (role = directoryKey)
+2. **API key** (role = admin)
 
 Decide which key is appropriate for your integration scenario.
 
@@ -81,7 +81,7 @@ After the key has been created you will receive three things:
 The access token is only returned directly after you create the key. This access token is
 valid for many years. So keep it secure!
 
-The 'issuer' and 'private key' can be used to [create access tokens](#create-an-access-token-with-the-issuer-and-private-key). These tokens have the
+The 'issuer' and 'private key' can be used to **create access tokens** (see below). These tokens have the
 same lifetime as a user session. This is [configurable per tenant](/administrator/company)
 but has a default value of 480 minutes (8 hours).
 
@@ -96,7 +96,7 @@ After the key has been created you will receive two things:
 1. issuer
 2. private key
 
-The 'issuer' and 'private key' can be used to [create access tokens](#create-an-access-token-with-the-issuer-and-private-key). These tokens have the
+The 'issuer' and 'private key' can be used to **create access tokens** (see below). These tokens have the
 same lifetime as a user session. This is [configurable per tenant](/administrator/company)
 but has a default value of 480 minutes (8 hours).
 

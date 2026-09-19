@@ -28,6 +28,11 @@ function processMarkdown(content) {
   content = content.replace(/<script setup>[\s\S]*?<\/script>/g, "");
   // Convert ::: info to blockquote
   content = content.replace(/::: info\n([\s\S]*?):::/g, "> **Info**\n$1");
+  content = content.trim();
+  // Remove the leading H1: Scalar already renders the OpenAPI tag name as
+  // its own section title (.section-header-label), so keeping the
+  // Markdown's own H1 here would just duplicate that title.
+  content = content.replace(/^#\s+.+\n+/, "");
   return content.trim();
 }
 
