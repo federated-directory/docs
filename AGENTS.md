@@ -41,6 +41,100 @@ This project adheres to **Material Design 3 (M3)** principles to ensure a consis
 - **Dark Mode**: Supports native dark mode. All custom styling (including API references) must be responsive to the `.dark` class.
 - **Scalar Integration**: The API reference is styled via CSS variable mapping to match the documentation's Material theme exactly.
 
+## Scalar API Reference Integration Notes
+
+The `/developer/api-reference` page embeds Scalar's `@scalar/api-reference` Vue
+component (via `docs/.vitepress/theme/ScalarWrapper.vue`) inside the normal
+VitePress layout (`layout: page`, standard VitePress sidebar/nav). Scalar was
+not designed to be embedded this way, so it has several quirks that have
+already bitten us once — check here before "rediscovering" them:
+
+- **Scalar's own sidebar/toolbar conflicts with VitePress's.** Scalar has its
+  own internal sidebar, search, and a built-in toolbar ("Developer Tools",
+  "Configure", "Share", "Deploy" buttons, class `.api-reference-toolbar`).
+  These duplicate VitePress's own sidebar/search and caused flickering/
+  duplicate menus. Fix: `showSidebar: false` in the `configuration` object
+  passed to `<ApiReference>` (note: **not** `hideSidebar` — that option
+  doesn't exist and silently does nothing), plus `hideSearch: true`, plus
+  hiding `.api-reference-toolbar` in `custom.css`. We rely entirely on the
+  VitePress left sidebar for navigation on this page (do not set
+  `sidebar: false` in `api-reference.md`'s frontmatter).
+- **Scalar renders in light DOM**, not Shadow DOM, so global CSS in
+  `custom.css` cascades into it normally — but Scalar re-declares its own
+  `--scalar-*` CSS custom properties directly on `.light-mode`/`.dark-mode`
+  (applied to `<body>`), which **override** any `--scalar-*` values set on
+  `:root`/`.dark`. To theme Scalar, override them again, scoped to
+  `.light-mode, .dark-mode { --scalar-...: ... !important; }`.
+- **Duplicate download buttons.** Scalar renders its own "Download OpenAPI
+  Document" (json/yaml) buttons (`.download`, `.download-container`) in
+  addition to whatever custom download button we add. Since we provide our
+  own single download button in `ScalarWrapper.vue`, both `.download` and
+  `.download-container` are hidden in `custom.css`.
+- **`.section-header-label` is reused for two different heading levels.**
+  Scalar renders both the OpenAPI tag/section title (e.g. "Users", as `h2`)
+  and each operation's title (e.g. "Delete a user", as `h3`) with this same
+  class, defaulted to plain 16px/400-weight body text — it does not
+  automatically match the site's heading scale. Size `h2.section-header-label`
+  / `h3.section-header-label` explicitly to match `.vp-doc h2`/`h3` (24px and
+  20px respectively, weight 400, confirmed via computed styles — don't
+  assume `600`).
+- **Injected Markdown content** (from `docs/developer/users-api.md`,
+  `docs/developer/obtaining-a-token.md`, `docs/mcp.md`, injected into the
+  OpenAPI tag `description` fields by `scripts/sanitize-spec.js`) renders
+  inside Scalar's own `.markdown` containers with a smaller heading scale
+  than the rest of the site. `custom.css` overrides `.markdown h1/h2/h3/p/li`
+  to match `.vp-doc`'s scale.
+- **Don't put a duplicate H1 in injected Markdown.** Scalar already renders
+  the tag name as its own section title (`.section-header-label`, see
+  above), so a leading `# Title` in the injected content produces a visible
+  duplicate title (small tag label immediately followed by a big H1 saying
+  almost the same thing). Fixed by stripping the leading H1 **during
+  injection** in `scripts/sanitize-spec.js`'s `processMarkdown()` — not by
+  editing the source `.md` files, since some of them (e.g. `mcp.md`) are also
+  real standalone routable pages that need to keep their own H1, and others
+  (`users-api.md`, `obtaining-a-token.md`) are redirect stubs to the API
+  reference page.
+- **In-page heading anchors don't work in injected content.** Scalar does not
+  generate heading-slug `id` attributes for the Markdown it renders inside
+  tag descriptions (it only supports this via a `withAnchors` prop used
+  internally for per-*operation* descriptions, not tag-level ones). Any
+  `[text](#some-heading-slug)` link inside injected content is dead — it will
+  never scroll anywhere. Either remove the link (keep the label as plain
+  `**bold**` text) or point it at a real Scalar section instead, e.g.
+  `/developer/api-reference#tag/oauth2` (see next point).
+- **`#tag/<name>` links across sections work, but only resolve once, on
+  mount.** Scalar's actual DOM ids for tag sections/operations are internally
+  prefixed (e.g. `id="api-1/tag/oauth2"`, not `id="tag/oauth2""`), and Scalar
+  only reads `window.location.hash` and scrolls to the matching section a
+  single time, when the app first mounts (e.g. on a fresh page load/refresh).
+  It does **not** react to clicks on its own `<a href="#tag/...">` links
+  inside Markdown content, nor to `hashchange` events — clicking such a link
+  updates the URL but never scrolls. Fixed with a manual click-interception
+  workaround in `ScalarWrapper.vue`: listen for clicks on same-page `#...`
+  links inside the wrapper, resolve the target element by suffix match
+  (`[id$="/${hash}"]`, since the internal prefix isn't guaranteed to stay
+  `api-1/`), and `scrollIntoView` + `history.pushState` manually. If you add
+  more cross-references between tags/operations in injected Markdown, they'll
+  go through this same fix automatically — no per-link changes needed.
+- **Scalar's own scroll-spy rewrites the URL hash as you scroll**, snapping it
+  to whichever section is currently centered in the viewport. This happens
+  even with plain mouse-wheel scrolling (nothing to do with the click fix
+  above) — don't mistake it for a bug when the hash in the address bar
+  "drifts" away from the section you clicked into shortly after landing.
+- **The rendered spec is a static file, not live.** `docs/public/swagger.json`
+  is generated once by `node scripts/sanitize-spec.js` (run automatically as
+  a `predev`/`prebuild` step). If you edit `scripts/sanitize-spec.js` or any
+  of the injected `.md` files while the developer's `docs:dev` server is
+  already running, you must **manually re-run
+  `node scripts/sanitize-spec.js`** from `docs/` to regenerate the static
+  file — the running dev server will not do this for you, and it won't
+  restart on its own.
+- **Scalar caches the parsed spec client-side** (localStorage/IndexedDB), so
+  after regenerating `swagger.json` you may still see stale content in an
+  already-open browser tab. Clear `localStorage`/`sessionStorage`/IndexedDB
+  for the page (or do a genuinely fresh navigation) before concluding a fix
+  didn't work.
+
 ## Agent Operational Rules
 
 ### MANDATORY DEVELOPMENT WORKFLOW
@@ -69,3 +163,10 @@ To ensure safety and provide the user with full control, all agents MUST adhere 
 - **Read-Only Default**: You may run read-only git commands (`status`, `log`, `diff`) freely to understand the context.
 - **Explicit Approval**: `git commit` and `git push` require a direct, specific request from the developer in the _current_ prompt.
 - **Verification First**: Always verify changes (run build, check diffs) in Step 2 before moving to Step 3.
+
+### LOCAL DEV SERVER PROTOCOL
+
+- **NEVER kill the developer's `npm run docs:dev` process** (e.g. via `kill`, `pkill`, or freeing its port) unless the developer explicitly asks you to stop it.
+- If you need to start a dev server yourself to verify a change, first check whether one is already running (e.g. `lsof -ti:5173`) and reuse it / view it instead of restarting it.
+- If a new instance is genuinely needed (e.g. to pick up a config change that doesn't hot-reload) and a port conflict occurs, prefer starting on a different port over killing the existing process, unless the developer confirms it's safe to kill.
+- When in doubt about whether a running process belongs to the developer or to your own earlier background task, ask before killing it.
