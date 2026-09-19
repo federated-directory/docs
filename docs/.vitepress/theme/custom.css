@@ -48,22 +48,42 @@
   --vp-c-success-1: #2e7d32; /* Green 800 */
 
   /* SCALAR VARIABLES (Light) - Syncs API Docs */
-  --scalar-color-1: var(--vp-c-brand-1);
-  --scalar-color-2: var(--vp-c-brand-2);
-  --scalar-color-3: var(--vp-c-brand-3);
+  --scalar-color-1: var(--vp-c-text-1);   /* Primary text */
+  --scalar-color-2: var(--vp-c-text-2);   /* Secondary text */
+  --scalar-color-3: var(--vp-c-text-3);   /* Muted/disabled text */
   --scalar-color-accent: var(--vp-c-brand-1);
 
   --scalar-background-1: var(--vp-c-bg);      /* Main BG */
   --scalar-background-2: var(--vp-c-bg-soft); /* Sidebar/Cards */
   --scalar-background-3: var(--vp-c-bg-alt);  /* Code blocks/Inputs */
 
-  --scalar-text-1: var(--vp-c-text-1);
-  --scalar-text-2: var(--vp-c-text-2);
-  --scalar-text-3: var(--vp-c-text-3);
-
   --scalar-border-color: var(--vp-c-border);
+  --scalar-font: var(--vp-font-family-base);
+  --scalar-font-code: var(--vp-font-family-mono);
   --vp-nav-bg-color: var(--vp-c-bg-soft);
   --vp-sidebar-bg-color: var(--vp-c-bg-soft);
+}
+
+/*
+  Scalar's own stylesheet re-declares its theme variables directly on the
+  .light-mode / .dark-mode classes (applied to <body>). Since that's a more
+  specific (local) declaration than our :root / .dark ones above, it wins and
+  Scalar falls back to its own default palette + Inter font. Redeclare the
+  same variables here, scoped to those classes, so our Material palette and
+  Roboto font actually take effect.
+*/
+.light-mode,
+.dark-mode {
+  --scalar-color-1: var(--vp-c-text-1) !important;
+  --scalar-color-2: var(--vp-c-text-2) !important;
+  --scalar-color-3: var(--vp-c-text-3) !important;
+  --scalar-color-accent: var(--vp-c-brand-1) !important;
+  --scalar-background-1: var(--vp-c-bg) !important;
+  --scalar-background-2: var(--vp-c-bg-soft) !important;
+  --scalar-background-3: var(--vp-c-bg-alt) !important;
+  --scalar-border-color: var(--vp-c-border) !important;
+  --scalar-font: var(--vp-font-family-base) !important;
+  --scalar-font-code: var(--vp-font-family-mono) !important;
 }
 
 
@@ -97,6 +117,11 @@ code, kbd, samp, pre, .vp-code {
   font-size: 24px;
   vertical-align: middle;
   position: relative;
+  /* Material Symbols glyphs are already correctly oriented (e.g. expand_more
+     already points down). VitePress's own icons.css rotates these classes
+     (assuming a single right-pointing base SVG), which double-rotates our
+     ligature glyphs and makes nav dropdown carets render sideways. */
+  transform: none !important;
 }
 
 .vp-icon::before, [class^="vpi-"]::before, [class*=" vpi-"]::before, .DocSearch-Search-Icon::before {
@@ -172,20 +197,18 @@ code, kbd, samp, pre, .vp-code {
   --vp-c-warning-1: #ffca28; /* Amber 200 */
   
   /* SCALAR VARIABLES (Dark) */
-  --scalar-color-1: var(--vp-c-brand-1);
-  --scalar-color-2: var(--vp-c-brand-2);
-  --scalar-color-3: var(--vp-c-brand-3);
+  --scalar-color-1: var(--vp-c-text-1);
+  --scalar-color-2: var(--vp-c-text-2);
+  --scalar-color-3: var(--vp-c-text-3);
   --scalar-color-accent: var(--vp-c-brand-1);
 
   --scalar-background-1: var(--vp-c-bg);
   --scalar-background-2: var(--vp-c-bg-soft);
   --scalar-background-3: var(--vp-c-bg-alt);
 
-  --scalar-text-1: var(--vp-c-text-1);
-  --scalar-text-2: var(--vp-c-text-2);
-  --scalar-text-3: var(--vp-c-text-3);
-
   --scalar-border-color: var(--vp-c-border);
+  --scalar-font: var(--vp-font-family-base);
+  --scalar-font-code: var(--vp-font-family-mono);
   --vp-nav-bg-color: var(--vp-c-bg-soft);
   --vp-sidebar-bg-color: var(--vp-c-bg-soft);
 }
@@ -239,6 +262,36 @@ h1, h2, h3, h4, h5, h6 {
   height: 100%;
 }
 
+/*
+  Our injected Markdown descriptions (Users API, User Data Model, etc.) render
+  inside Scalar's own `.markdown` containers, which use a smaller heading
+  scale than the rest of the site. Align them with the VitePress `.vp-doc`
+  heading scale so injected content matches the rest of the docs.
+*/
+.markdown h1 { font-size: 32px !important; line-height: 40px !important; }
+.markdown h2 { font-size: 24px !important; line-height: 32px !important; }
+.markdown h3 { font-size: 20px !important; line-height: 28px !important; }
+.markdown p, .markdown li { font-size: 16px !important; line-height: 28px !important; }
+
+/*
+  Scalar reuses `.section-header-label` for both the tag/section titles
+  (e.g. "Users", rendered as h2) and individual operation titles (e.g.
+  "Delete a user", rendered as h3). It defaults to plain body text size
+  (16px/400 weight), which reads as a duplicate line of body copy rather
+  than a heading. Bump each to match the equivalent VitePress `.vp-doc`
+  heading scale used everywhere else on the site.
+*/
+h2.section-header-label {
+  font-size: 24px !important;
+  line-height: 32px !important;
+  font-weight: 400 !important;
+}
+h3.section-header-label {
+  font-size: 20px !important;
+  line-height: 28px !important;
+  font-weight: 400 !important;
+}
+
 .vp-doc.api-reference-page {
   padding: 0 !important;
   max-width: 100% !important;
@@ -255,36 +308,30 @@ h1, h2, h3, h4, h5, h6 {
   display: none !important;
 }
 
-/* Hide default Scalar download button (triggers multiple downloads) */
-.download {
+/*
+  Hide default Scalar download buttons/links (the ".download" class and the
+  "Download OpenAPI Document" json/yaml buttons under the title). We already
+  provide our own single "Download OpenAPI Spec" button in ScalarWrapper.vue,
+  so these are redundant duplicates.
+*/
+.download,
+.download-container {
+  display: none !important;
+}
+
+/*
+  Hide Scalar's built-in toolbar ("Developer Tools", "Configure", "Share",
+  "Deploy" buttons). It sits behind/overlaps our custom download button and
+  duplicates functionality (or exposes features, like Deploy, that aren't
+  relevant for embedded docs).
+*/
+.api-reference-toolbar {
   display: none !important;
 }
 
 /* Hide Scalar internal search bar */
 .scalar-api-references-standalone-search {
   display: none !important;
-}
-
-/* 
-  Fix Scalar Sidebar Scrolling 
-  1. Constrain the sidebar container (aside) to the viewport height but DISABLE its scroll.
-  2. Force the inner navigation list to handle the scrolling.
-*/
-.api-reference-page .scalar-api-reference aside {
-    position: sticky !important;
-    top: var(--vp-nav-height) !important;
-    max-height: calc(100vh - var(--vp-nav-height)) !important;
-    overflow: hidden !important; /* No scroll on the container */
-    display: flex !important;
-    flex-direction: column !important;
-    z-index: 10; 
-}
-
-.api-reference-page .scalar-api-reference .references-navigation-list {
-    overflow-y: auto !important; /* Scroll here */
-    height: auto !important; /* Override inline styles */
-    max-height: 100% !important; /* Fill the aside */
-    flex: 1 !important;
 }
 
 /* Hide API Version and OAS info (e.g. "0.9.1 OAS 2.0") */
