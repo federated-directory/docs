@@ -9,6 +9,13 @@
 }
 
 @font-face {
+  font-family: 'Roboto';
+  src: url('/fonts/roboto-v32-latin-700.woff2') format('woff2');
+  font-weight: 700;
+  font-style: normal;
+}
+
+@font-face {
   font-family: 'Material Symbols Outlined';
   src: url('/fonts/material-symbols-outlined.woff2') format('woff2');
   font-weight: 100 700;
@@ -217,6 +224,30 @@ code, kbd, samp, pre, .vp-code {
 h1, h2, h3, h4, h5, h6 {
   font-weight: 400 !important; /* Material Design standard */
   letter-spacing: normal;
+}
+
+/*
+  VitePress renders top-level sidebar group labels ("User", "Administrator",
+  "Integrations", "Developer") as plain h2/h3 elements with no link, normally
+  bolded (font-weight: 700) to visually separate them from the clickable
+  items below. The blanket h1-h6 override above flattens that back down to
+  400, making the group labels read as just another menu item. Restore a
+  clear M3 "list subheader" treatment: bolder weight, slightly smaller size,
+  uppercase with letter-spacing, and a muted secondary color.
+*/
+.VPSidebarItem.level-0 > .item > .text {
+  font-size: 12px !important;
+  font-weight: 700 !important;
+  letter-spacing: 0.08em !important;
+  text-transform: uppercase;
+  color: var(--vp-c-text-3) !important;
+  /*
+    Without a real Roboto Bold @font-face, browsers only apply a thin
+    synthetic bold. Now that the actual 700-weight woff2 is loaded above,
+    font-weight: 700 renders as true bold — but add a hair of stroke width
+    on top so the label reads unmistakably heavier at this small size.
+  */
+  -webkit-text-stroke: 0.2px currentColor;
 }
 
 /* Layout Tweaks */
