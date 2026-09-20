@@ -9,3 +9,6 @@ docs/developer/api-search.md
 # macOS
 .DS_Store
 **/.DS_Store
+
+# Playwright MCP tool output (screenshots, page snapshots, console logs)
+.playwright-mcp/
