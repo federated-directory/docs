@@ -62,41 +62,14 @@ A role determines the authorizations given to an access token.
 
 There are two sort of keys.
 
-1. **Directory key** (role = directoryKey)
-2. **API key** (role = admin)
+1. **Directory key** (role = directoryKey) — scoped to a single directory. Create one via [Directory keys](/administrator/directories#directory-keys).
+2. **API key** (role = admin) — has administrator permissions across your whole tenant. Create one via [Integrations](/administrator/integrations).
 
-Decide which key is appropriate for your integration scenario.
+Decide which key is appropriate for your integration scenario, then create it in the admin UI using the links above.
 
-### Create a directory key
+A directory key returns three things: `issuer`, `private key`, and an `access token` (returned only once, directly after creation — keep it secure). An API key returns just `issuer` and `private key`.
 
-Go to 'directories' and select the directory you want to integrate with.
-Go to the "KEYS" tab and create a new key.
-
-After the key has been created you will receive three things:
-
-1. issuer
-2. private key
-3. access token
-
-The access token is only returned directly after you create the key. This access token is
-valid for many years. So keep it secure!
-
-The 'issuer' and 'private key' can be used to **create access tokens** (see below). These tokens have the
-same lifetime as a user session. This is [configurable per tenant](/administrator/company)
-but has a default value of 480 minutes (8 hours).
-
-### Create an API key
-
-An API key has the same permissions as a user with the 'administrator' role.
-
-To create such a key, go to 'integrations' in the menu and create a new key.
-
-After the key has been created you will receive two things:
-
-1. issuer
-2. private key
-
-The 'issuer' and 'private key' can be used to **create access tokens** (see below). These tokens have the
+The `issuer` and `private key` of either key type can be used to **create access tokens** (see below). These tokens have the
 same lifetime as a user session. This is [configurable per tenant](/administrator/company)
 but has a default value of 480 minutes (8 hours).
 
