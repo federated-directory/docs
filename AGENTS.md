@@ -41,6 +41,37 @@ This project adheres to **Material Design 3 (M3)** principles to ensure a consis
 - **Dark Mode**: Supports native dark mode. All custom styling (including API references) must be responsive to the `.dark` class.
 - **Scalar Integration**: The API reference is styled via CSS variable mapping to match the documentation's Material theme exactly.
 
+## Content Organization & Scope
+
+Documentation is split across three audiences, each with its own sidebar
+section (`docs/user/`, `docs/administrator/`, `docs/developer/`, plus a few
+top-level pages like `mcp.md`). Keep content strictly scoped to its section
+— this is what keeps the developer docs (and, by extension, the Scalar API
+reference they feed into) from turning into a duplicate of the admin/user
+manual:
+
+- **User docs**: how an end-user uses the Federated Directory portal itself
+  (searching contacts, managing their profile, groups, chat methods, etc.).
+- **Administrator docs**: how an administrator configures the portal
+  (directories, SSO/SCIM setup, groups, company settings, and — importantly
+  — creating directory keys / API keys via the UI). This is the single
+  source of truth for "click through the portal to do X".
+- **Developer docs** (and anything injected into Scalar, see below): how to
+  use the APIs and the MCP server — authentication mechanics (JWT encoding,
+  audiences/roles, scopes), request/response schemas, endpoints, tools, and
+  integration patterns. Developer docs should **not** contain portal
+  click-paths (e.g. "go to Directories > Keys tab > Create Key"). If a
+  developer-facing task requires an action in the portal (creating an API
+  key, creating a group, enabling a feature), **link to the relevant
+  administrator (or user) doc instead of duplicating the steps** — e.g.
+  `[Directory keys](/administrator/directories#directory-keys)` rather than
+  re-explaining the click-path inline.
+
+When editing developer docs, ask: "is this explaining an API/MCP concept, or
+is this explaining how to click through our portal?" The former belongs in
+developer docs; the latter belongs in user/administrator docs, with a link
+back to it.
+
 ## Scalar API Reference Integration Notes
 
 The `/developer/api-reference` page embeds Scalar's `@scalar/api-reference` Vue
@@ -129,6 +160,22 @@ already bitten us once — check here before "rediscovering" them:
   `node scripts/sanitize-spec.js`** from `docs/` to regenerate the static
   file — the running dev server will not do this for you, and it won't
   restart on its own.
+- **Keep injected content developer-focused; admin/product walkthroughs stay
+  on the VitePress-only page.** Files injected into Scalar tag descriptions
+  (`docs/mcp.md`, `docs/developer/users-api.md`,
+  `docs/developer/obtaining-a-token.md` — see `DOCS_MAPPING` in
+  `scripts/sanitize-spec.js`) are rendered on **two** surfaces: their own
+  standalone VitePress page, and inline inside Scalar's API reference. A
+  section that's appropriate for the standalone page (e.g. "Setup" — click
+  through the admin UI to create a group/API key) is usually *not*
+  appropriate inside Scalar, which should stay focused on developer/API
+  reference material. Rather than maintaining two versions of the file, wrap
+  the VitePress-only section in `<!-- scalar:omit:start -->` /
+  `<!-- scalar:omit:end -->` HTML comments (inert on the VitePress page, so
+  it still renders there normally) and set an `omitReplacement` string for
+  that tag in `DOCS_MAPPING` — `processMarkdown()` swaps the wrapped block
+  for that replacement (typically a short pointer link back to the full page,
+  e.g. `/mcp#setup`) only in the Scalar-injected copy.
 - **Scalar caches the parsed spec client-side** (localStorage/IndexedDB), so
   after regenerating `swagger.json` you may still see stale content in an
   already-open browser tab. Clear `localStorage`/`sessionStorage`/IndexedDB
