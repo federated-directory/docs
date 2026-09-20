@@ -274,6 +274,18 @@ h1, h2, h3, h4, h5, h6 {
 .markdown p, .markdown li { font-size: 16px !important; line-height: 28px !important; }
 
 /*
+  Injected Markdown tables (e.g. "Audiences and roles" in
+  obtaining-a-token.md) render inside Scalar's `.markdown` containers with
+  auto-sized columns, which lets narrow columns (e.g. "Audience", "Role")
+  wrap awkwardly into one-word-per-line. Give the first column of these
+  tables a sane minimum width so short labels stay on one line.
+*/
+.markdown table th:first-child,
+.markdown table td:first-child {
+  min-width: 8em;
+}
+
+/*
   Scalar reuses `.section-header-label` for both the tag/section titles
   (e.g. "Users", rendered as h2) and individual operation titles (e.g.
   "Delete a user", rendered as h3). It defaults to plain body text size
