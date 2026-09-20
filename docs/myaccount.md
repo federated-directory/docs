@@ -40,7 +40,7 @@ All input fields have some minimum (mostly 0) and a maximum number of characters
 
 When you are done updating your profile, and there is no incorrect data in any of the input fields, you can save your new profile by pressing the blue "update profile" button at the bottom of the page.
 
-A complete overview of the syntax requirements on these attributes can be found [here](/developer/api-reference#model/UserResponse).
+A complete overview of the syntax requirements on these attributes can be found [here](/developer/api-reference#models/UserResponse).
 
 <h3>Update your photo</h3>
 
@@ -60,7 +60,7 @@ Press the button, and your new profile photo will be uploaded, optimized, and sh
 
 <h3>Change your password</h3>
 
-**Can't log in because you forgot your current username and/or password?** [Go here](https://docs.federated.directory/login).
+**Can't log in because you forgot your current username and/or password?** [Go here](/login).
 
 This functionality only works for those who use a Federated Directory account with username and password. You can request a password change by clicking **CHANGE PASSWORD** button. We will send you a link where you can reset your password to a new value.
 

@@ -31,7 +31,7 @@ Integrating Federated Directory with Google Workspace provides you with the foll
 - [Users can log in with their Google accounts.](#authentication)
 - [Users are synced from your Google Workspace.](#user-management-by-google-workspace)
 
-Before you continue make sure you <a href="../getting-started#sign-up">signed up</a> to Federated Directory.
+Before you continue make sure you <a href="../getting-started">signed up</a> to Federated Directory.
 
 ## Authentication
 

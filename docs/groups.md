@@ -39,7 +39,7 @@ This group can be removed by the administrator.
 
 ## Create a group
 
-Both users and administrators are able to create groups, however an administrator can disable this for its users on the [directory settings](https://docs.federated.directory/administrator/directories#user-functionality).
+Both users and administrators are able to create groups, however an administrator can disable this for its users on the [directory settings](/administrator/directories#user-functionality).
 
 You create a new group by going to 'Groups' in the main menu and click the **CREATE GROUP** button.
 
