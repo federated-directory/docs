@@ -53,7 +53,7 @@ You’ll need a Federated Directory to get started. If you don’t have one alre
 | Value       | Description                                                                                                                                                           |
 | :---------- | :-------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | accessToken | Enter the access token you created earlier. This will be used in all API calls within the Postman demo collection.                                                    |
-| directoryId | The unique ID of the directory your users will be created in. You can find it under the 'settings' tab on the same directory you created the directory key in step 1. |
+| directoryId | The unique ID of the directory your users will be created in. You can find it under the [directory settings](/administrator/directories#directory-settings) of the same directory you created the directory key in step 1. |
 
 Click Update to save your changes.
 

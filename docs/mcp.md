@@ -80,7 +80,7 @@ Retrieve the management chain for a contact — the path from the root manager d
 
 In MCP Apps-capable hosts (Claude Desktop, ChatGPT, VS Code, Goose, Postman), this tool also renders an **interactive org chart widget** inline in the conversation — a sandboxed HTML view of the management chain — instead of just a text response. Hosts that don't support MCP Apps still get a plain structured/text result, so the tool works everywhere; the interactive chart is a bonus in supporting clients.
 
-If access control limits how much of the chain a caller is allowed to see (based on the group and shared attributes configured for their API key), the result indicates that the chain was truncated rather than exposing managers outside the caller's visibility.
+If access control limits how much of the chain a caller is allowed to see (based on the groups and shared attributes the caller has access to, whether through an API key or an authenticated user session), the result indicates that the chain was truncated rather than exposing managers outside the caller's visibility.
 
 ### Resources
 
@@ -94,7 +94,12 @@ For the full list of supported fields, attributes, and request/response schemas,
 
 ## Setup
 
-To expose Federated Directory data through the MCP, an administrator needs to create a group with the right members and shared attributes, generate an API key, and assign that key to the group.
+To expose Federated Directory data through the MCP, an administrator first creates a [group](/groups) with the right members and shared attributes, then grants an integration access to that group using **one of two methods**:
+
+- **OAuth 2.0 (recommended)** — each user authenticates and consents individually. Best for interactive MCP clients used directly by your own people, such as Claude Desktop, ChatGPT, or other assistant/chat integrations.
+- **API key** — a single static credential shared by a whole integration. Best for unattended, server-to-server automation where no individual user is present to log in.
+
+> A **directory key** (used for automated user provisioning, e.g. from Entra ID or Okta) cannot be used here — it cannot be assigned to a group and has no access to the MCP endpoint. Use a company-level **API key** or an **Application** instead, as described below.
 
 ### Step 1: Create a group
 
@@ -102,28 +107,38 @@ The group defines **who** is visible through the MCP and **which attributes** ar
 
 When configuring the group, pay close attention to the **shared attributes** — only these fields will be returned to the MCP client, regardless of what it requests. This gives you precise control over what data is exposed per integration.
 
-### Step 2: Create an API key
+### Step 2: Grant an integration access to the group
 
-Go to the **Federated Directory** directory and create a key there — see [Directory keys](/administrator/directories#directory-keys) for the steps. Give it a descriptive name (for example: `MCP - Internal Assistant`) and copy the access token immediately, since it will not be shown again.
+Choose one of the following, depending on whether a person will be authenticating interactively or the integration runs unattended.
 
-Use a dedicated API key per integration so access can be tracked and revoked independently.
+#### Option A: OAuth 2.0 application (recommended for interactive clients)
 
-### Step 3: Assign the API key to the group
+1. When [creating the group](/groups#create-a-group) (or, if using the wildcard option, at any time), select which [Application](/administrator/integrations#applications-oauth-2-0) is allowed to access it. If the application doesn't exist yet, register it first under **Integrations > Applications** — see [Applications (OAuth 2.0)](/administrator/integrations#applications-oauth-2-0).
+2. Each member of the group can now connect their MCP client (e.g. Claude Desktop, ChatGPT) directly to the MCP endpoint. The client discovers the authorization details automatically and the user is prompted to log in and consent — no token needs to be copied or configured manually.
+3. Access is automatically limited to the intersection of the groups the user belongs to and the groups that enabled that application. Revoking access is done per user (revoke their consent for the application) or by disabling the application for the group.
 
-1. Open the group you created in Step 1.
-2. Add the API key as a member of the group.
+#### Option B: API key (for unattended/server-to-server integrations)
 
-The API key now has access to exactly the contacts and attributes configured on that group.
+1. Create a company-level **API key** — *not* a directory key — under **Integrations > API keys**. See [API keys](/administrator/integrations#api-keys) for the steps. Give it a descriptive name (for example: `MCP - Internal Assistant`) and copy the access token immediately, since it will not be shown again.
+2. On that same key, assign it to the group you created in Step 1 — see [Assign an API key to a group](/administrator/integrations#assign-an-api-key-to-a-group).
+3. Use a dedicated API key per integration so access can be tracked and revoked independently.
 
-### Step 4: Configure your MCP client
+The key now has access to exactly the contacts and attributes configured on that group.
+
+### Step 3: Configure your MCP client
 
 Use the following settings in your MCP client or integration:
 
 - **Server URL:** `https://api.federated.directory/v2/mcp`
+
+If you set up **OAuth 2.0** (Option A), most MCP-compatible clients will detect the authorization requirements automatically from the server URL alone and walk you through login/consent — no further configuration is needed.
+
+If you set up an **API key** (Option B), configure your client to send it as a Bearer token:
+
 - **Authentication:** Bearer token
 - **Header:** `Authorization: Bearer <YOUR_ACCESS_TOKEN>`
 
-Only use the API key in trusted, server-side systems. Never expose it in frontend code or public clients.
+Only use an API key in trusted, server-side systems. Never expose it in frontend code or public clients.
 
 ## Developer reference
 

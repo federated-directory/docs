@@ -145,5 +145,4 @@ See [Obtaining a token](./obtaining-a-token) for instructions on how to get a to
 
 Follow us to stay up to date on any API changes:
 
-- [Twitter](https://twitter.com/fed_dir)
 - [LinkedIn](https://www.linkedin.com/company/federated-directory)
