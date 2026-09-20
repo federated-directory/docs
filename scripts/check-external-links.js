@@ -24,7 +24,9 @@ async function checkUrl(url) {
       method: 'HEAD',
       signal: controller.signal,
       headers: {
-        'User-Agent': 'FederatedDirectory-Docs-LinkChecker/1.0'
+        // Some sites (e.g. Microsoft AppSource/Marketplace) return 403 for
+        // non-browser User-Agents, so we impersonate a common browser here.
+        'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36'
       }
     });
     clearTimeout(timeoutId);
@@ -38,7 +40,7 @@ async function checkUrl(url) {
        const response2 = await fetch(url, {
          method: 'GET',
          signal: controller2.signal,
-         headers: { 'User-Agent': 'FederatedDirectory-Docs-LinkChecker/1.0' }
+         headers: { 'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36' }
        });
        clearTimeout(timeoutId2);
        if (response2.ok) return { url, status: response2.status, ok: true };
