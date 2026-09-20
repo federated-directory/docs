@@ -102,7 +102,16 @@ If your company does not have a corporate address book, you can fill your direct
 
 2. By uploading a CSV file containing the contact information of all your employees.
 
-   This will allow you to add multiple users at the same time
+   Importing users follows a 3-step wizard:
+
+   1. **Select CSV file** — We recommend exporting the current users in this directory first (see [Export](#export) below) to use as a template. Based on the columns present on each row, the CSV determines whether a user is created, updated, or deleted:
+      - **Create** a user by leaving out the `id` column and providing a valid `displayName` and `userName`.
+      - **Update** a user by providing a valid `id`, `displayName`, and `userName`.
+      - **Delete** a user by providing a valid `id`, `displayName`, and `userName`, plus a `deleteUser` column set to `TRUE`. Be careful with this column: any row where it is set to `TRUE` will permanently delete that user.
+
+      Users not present in the CSV file remain untouched, and non-mandatory attributes left out will become empty on the affected users.
+   2. **Confirm changes** — Review which users will be created, updated, or deleted (and any rows that will be ignored due to incorrect or incomplete data) before anything is saved.
+   3. **Results** — After confirming, see which rows were processed successfully and which gave an error.
 
 ### Export
 
@@ -210,5 +219,5 @@ You can delete a directory from the 'directory overview'.
 
 1. Go to **Directories** in the side menu
 2. Choose the directory you want to delete
-3. In the directory overview navigate to **CONFIG** tab
+3. In the directory overview navigate to **Settings** tab
 4. Click **DELETE DIRECTORY** button

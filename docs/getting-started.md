@@ -45,6 +45,16 @@ During your sign up you will need to provide this information:
 
 Only finalize the sign-up process after you have read and agreed to our [terms of service](https://federated.directory/terms).
 
+If you sign up with your Google or Microsoft account and no Federated Directory company exists yet for that account, you will be asked to finalize your signup in a short dialog instead, where you provide:
+
+| Input               | Description                                                   |
+| :------------------ | :------------------------------------------------------------- |
+| Full company name   | The full, display name of your company. Max 200 characters.  |
+| Short company name  | Same rules as above.                                          |
+| Email address       | Your work email address.                                      |
+
+Here too, you need to agree to the terms of service and privacy policy before you can finalize your signup.
+
 
 ## Set up
 

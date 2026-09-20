@@ -78,11 +78,19 @@ Your new password should adhere to our Password Policy:
 
 ---
 
-<h2 id="sessions">Sessions</h2>
+<h2 id="security">Security &amp; Access</h2>
 
-All your current active sessions can be found on the tab **SESSIONS**. If you logged on to Federated Directory from another computer and forgot to log off, you can end that session here. This will keep your company's (and all federated company's) data safe.
+On the tab **SECURITY & ACCESS** you can manage the apps connected to your account and your currently active sessions.
 
-To end one of your sessions, click on it in the list, then click **END SESSION** button.
+<h3>Connected apps</h3>
+
+This section lists the third-party applications (registered as [OAuth 2.0 applications](/administrator/integrations#applications-oauth-2-0)) you've granted access to your account and your Federated Directory data. Click **REVOKE** next to an app to remove its access.
+
+<h3>Active sessions</h3>
+
+All your current active sessions can be found here. If you logged on to Federated Directory from another computer and forgot to log off, you can end that session here. This will keep your company's (and all federated company's) data safe.
+
+To end one of your sessions, click on it in the list, then click **End session** button.
 
 The icon button next to the IP-address
 

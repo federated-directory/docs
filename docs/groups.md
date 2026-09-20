@@ -50,8 +50,9 @@ In the next step you can configure your new group.
 | Name              | Give your new directory a name. Max 100 characters.                |
 | Description       | A description of your group. Max 250 characters.                   |
 | Shared Attributes | The attributes that will be shared between the user in this group. |
+| Allowed applications | Select which [OAuth 2.0 applications](/administrator/integrations#applications-oauth-2-0) members of this group can log in to and grant access to this group's data. You can allow all applications (including those integrated in the future) or select specific ones. |
 
-You will be able to change the name, description and the used '[chat methods](#chat-methods)' later on. The shared attributes can not be changed after a group has been created. This way, we protect the privacy of the members of that group.
+You will be able to change the name, description and the used '[chat methods](#chat-methods)' later on. The shared attributes and allowed applications can not be changed after a group has been created. This way, we protect the privacy of the members of that group.
 After the group is created, you can also change the logo of the group.
 
 Click the **NEXT** button. Confirm the creation of the group in the last step by clicking the **CREATE GROUP** button.

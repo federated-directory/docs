@@ -57,6 +57,7 @@ A role determines the authorizations given to an access token.
 | User         | Is not able to make changes to any other user in or the configuration in its company                                                                                                                                               |
 | directoryKey | Always a key (audience) that has admin permissions on one specific directory in your Federated Directory. Ideal for integration with your current corporate address book or IAM solution (like Entra ID, Google Directory or Okta) |
 | admin        | Full administrative permissions. Can modify all users and settings in its company                                                                                                                                                  |
+| read         | A dedicated, read-only scope automatically issued to sessions created through the OAuth 2.0 authorization-code flow (i.e. when a user connects an [Application](/administrator/integrations#applications-oauth-2-0) via the "Sign in" consent screen), regardless of that user's actual role. It is intentionally restricted to a small set of read-only endpoints — currently `GET /v2/Users` and the [MCP](/mcp) endpoint (`POST /v2/mcp`) — and can never grant `admin`-level access. |
 
 ## Retrieve an access token with a key
 

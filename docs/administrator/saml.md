@@ -39,7 +39,6 @@ Enabling this, is as easy as selecting `SAML 2.0` from the authentication settin
 | Login page URL           | Required. SAML request will be send to this URL of your identity provider                                                           |
 | Verification certificate | Required. The SAML response must be signed, and you will need to paste a valid X.509 formatted certificate to verify your identity. |
 | Logout page URL          | Optional. Your users will be redirected to this URL after they log out.                                                             |
-| Password reset URL       | Optional. Your users will be redirected to this URL when they press "forgot password" button on our login page.                     |
 
 During the authentication process we map the users id (`nameID`) with the `userName` of this user within our directory. We only allow access to those users we know.
 Make sure the users ID is immutable and unique.
@@ -53,7 +52,7 @@ Make sure the users ID is immutable and unique.
 ### Parameters
 
 Follow these parameters to configure your SAML connection:
-(You can find the id of your directory under the 'config' tab)
+(You can find the id of your directory under the 'Settings' tab)
 
 | Parameter                      | Description                                                                                                                                                                                                                    |
 | :------------------------------- | :---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
