@@ -22,7 +22,7 @@ head:
       content: Sync users from Google Workspace to Federated Directory. Enable SSO with Google accounts. Auto-provision users and profile updates.
 ---
 
-# Integrate with Google
+# Google
 
 If your corporate address book resides in Google Workspace you may want to integrate it with your Federated Directory.
 

@@ -22,7 +22,7 @@ head:
       content: Connect Okta Universal Directory to Federated Directory. Enable SAML SSO and auto-provision users from Okta with SCIM.
 ---
 
-# Integrate with Okta
+# Okta
 
 In case your company uses Okta as their identity and access management solution, a lot of your corporate address book data resides in the Universal directory of Okta.  
 Which is great, because you can integrate Okta with Federated Directory.

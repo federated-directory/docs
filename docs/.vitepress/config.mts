@@ -104,6 +104,9 @@ export default defineConfig({
   },
   themeConfig: {
     siteTitle: false,
+    outline: {
+      level: "deep",
+    },
     logo: {
       src: "/images/FederatedDirectory_horizontal.svg",
       alt: "Federated Directory",
@@ -134,18 +137,25 @@ export default defineConfig({
         text: "Integrations",
         items: [
           { text: "Model Context Protocol (MCP)", link: "/mcp" },
-          { text: "Outlook Add-in", link: "/outlook-add-in" },
-          { text: "Teams App", link: "/teams-app" },
-          { text: "Integrate with Google", link: "/administrator/google" },
+          { text: "Google", link: "/administrator/google" },
           {
-            text: "Integrate with Microsoft",
-            link: "/administrator/microsoft",
+            text: "Microsoft",
+            items: [
+              { text: "SSO & Entra ID", link: "/administrator/microsoft" },
+              { text: "Outlook Add-in", link: "/outlook-add-in" },
+              { text: "Teams App", link: "/teams-app" },
+            ],
           },
-          { text: "Integrate with Okta", link: "/administrator/okta" },
-          { text: "Integrate with OneLogin", link: "/administrator/onelogin" },
-          { text: "Integrate with OIDC", link: "/administrator/oidc" },
-          { text: "Integrate with SAML 2.0", link: "/administrator/saml" },
-          { text: "Integrate with SCIM 2.0", link: "/administrator/scim" },
+          { text: "Okta", link: "/administrator/okta" },
+          { text: "OneLogin", link: "/administrator/onelogin" },
+          {
+            text: "Your own IDP",
+            items: [
+              { text: "OIDC", link: "/administrator/oidc" },
+              { text: "SAML 2.0", link: "/administrator/saml" },
+              { text: "SCIM 2.0", link: "/administrator/scim" },
+            ],
+          },
         ],
       },
       {
@@ -185,18 +195,25 @@ export default defineConfig({
         text: "Integrations",
         items: [
           { text: "Model Context Protocol (MCP)", link: "/mcp" },
-          { text: "Outlook Add-in", link: "/outlook-add-in" },
-          { text: "Teams App", link: "/teams-app" },
-          { text: "Integrate with Google", link: "/administrator/google" },
+          { text: "Google", link: "/administrator/google" },
           {
-            text: "Integrate with Microsoft",
-            link: "/administrator/microsoft",
+            text: "Microsoft",
+            items: [
+              { text: "SSO & Entra ID", link: "/administrator/microsoft" },
+              { text: "Outlook Add-in", link: "/outlook-add-in" },
+              { text: "Teams App", link: "/teams-app" },
+            ],
           },
-          { text: "Integrate with Okta", link: "/administrator/okta" },
-          { text: "Integrate with OneLogin", link: "/administrator/onelogin" },
-          { text: "Integrate with OIDC", link: "/administrator/oidc" },
-          { text: "Integrate with SAML 2.0", link: "/administrator/saml" },
-          { text: "Integrate with SCIM 2.0", link: "/administrator/scim" },
+          { text: "Okta", link: "/administrator/okta" },
+          { text: "OneLogin", link: "/administrator/onelogin" },
+          {
+            text: "Your own IDP",
+            items: [
+              { text: "OIDC", link: "/administrator/oidc" },
+              { text: "SAML 2.0", link: "/administrator/saml" },
+              { text: "SCIM 2.0", link: "/administrator/scim" },
+            ],
+          },
         ],
       },
       {

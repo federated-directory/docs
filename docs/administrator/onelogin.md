@@ -22,7 +22,7 @@ head:
       content: Connect OneLogin to Federated Directory. Enable SAML SSO and auto-provision users from OneLogin with SCIM.
 ---
 
-# Integrate with OneLogin
+# OneLogin
 
 In case your company uses OneLogin as their identity and access management solution, a lot of your corporate address book data already resides there.
 Which is great, because you can integrate OneLogin with Federated Directory.

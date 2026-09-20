@@ -22,7 +22,7 @@ head:
       content: Configure OpenID Connect SSO for Federated Directory. Connect your custom identity provider with Authorization Code Flow support.
 ---
 
-# Integrate with OpenID Connect
+# OpenID Connect
 
 OpenID Connect-based single sign-on (SSO) gives your users access to Federated Directory through an identity provider (IDP) of your choice.
 
@@ -36,12 +36,11 @@ Enabling this, is as easy as selecting `OpenID Connect` from the authentication 
 <img style="width: 40px;   display:inline;" src="/images/directories-introduction-oidc.svg" alt="Connect your own IDP through a OpenID Connect connection"/>
 
 | Input             | Description                                                                                                                                                                                                                                 |
-| :---------------- | :------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ | --- |
+| :----------------- | :--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | Configuration URL | Required. A link to a JSON document with key information needed for an app to sign in. It includes URLs and the location of public signing keys. It's typically found at the issuer's URL, appended with /.well-known/openid-configuration. |
 | Client ID         | Required. The client ID obtained from your identity provider.                                                                                                                                                                               |
 | Client Secret     | Required. The client secret obtained from your identity provider.                                                                                                                                                                           |
 | Logout page URL   | Optional. Your users will be redirected to this URL after they log out.                                                                                                                                                                     |
-|                   |                                                                                                                                                                                                                                             |     |
 
 During the authentication process we map the users username (`preferred_username`) with the `userName` of this user within our directory. We only allow access to those users we already know. First we will look for the `preferred_username` in the `id_token`. Incase it is not present in the `id_token`, we will look for the `preferred_username` in the `userinfo` which we will retrieve at your IDP.
 
