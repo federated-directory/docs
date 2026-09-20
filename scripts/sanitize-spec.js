@@ -7,11 +7,20 @@ const API_URL = "https://api.federated.directory/swagger.json";
 const OUTPUT_DIR = path.join(__dirname, "../docs/public");
 const OUTPUT_FILE = path.join(OUTPUT_DIR, "swagger.json");
 
-// Mapping of OpenAPI Tags to Markdown file paths for documentation injection
+// Mapping of OpenAPI Tags to Markdown file paths for documentation injection.
+// `omitReplacement` (optional): text that replaces any block wrapped in
+// `<!-- scalar:omit:start -->` ... `<!-- scalar:omit:end -->` markers in the
+// source file. Use this to keep product/admin-onboarding content (group
+// creation, UI click-paths, etc.) on the VitePress site only, while Scalar's
+// API reference stays focused on developer-facing reference material.
 const DOCS_MAPPING = {
-  Users: "docs/developer/users-api.md",
-  OAuth2: "docs/developer/obtaining-a-token.md",
-  MCP: "docs/mcp.md",
+  Users: { file: "docs/developer/users-api.md" },
+  OAuth2: { file: "docs/developer/obtaining-a-token.md" },
+  MCP: {
+    file: "docs/mcp.md",
+    omitReplacement:
+      "## Setup\n\nFor step-by-step setup instructions — creating a group, generating an API key, and configuring your MCP client — see the [full MCP guide](/mcp#setup).",
+  },
 };
 
 // Ensure output directory exists
@@ -19,7 +28,7 @@ if (!fs.existsSync(OUTPUT_DIR)) {
   fs.mkdirSync(OUTPUT_DIR, { recursive: true });
 }
 
-function processMarkdown(content) {
+function processMarkdown(content, options = {}) {
   // Remove frontmatter
   content = content.replace(/^---[\s\S]*?---\n/, "");
   // Remove <ScalarEndpoint ... /> lines
@@ -28,6 +37,14 @@ function processMarkdown(content) {
   content = content.replace(/<script setup>[\s\S]*?<\/script>/g, "");
   // Convert ::: info to blockquote
   content = content.replace(/::: info\n([\s\S]*?):::/g, "> **Info**\n$1");
+  // Strip any block wrapped in `<!-- scalar:omit:start -->` / `<!-- scalar:omit:end -->`
+  // markers (VitePress-site-only content, e.g. admin/product onboarding
+  // steps), optionally replacing it with a short pointer back to the
+  // full page.
+  content = content.replace(
+    /<!--\s*scalar:omit:start\s*-->[\s\S]*?<!--\s*scalar:omit:end\s*-->/g,
+    options.omitReplacement || "",
+  );
   content = content.trim();
   // Remove the leading H1: Scalar already renders the OpenAPI tag name as
   // its own section title (.section-header-label), so keeping the
@@ -39,12 +56,14 @@ function processMarkdown(content) {
 function injectDocumentation(spec) {
   if (!spec.tags) return;
 
-  for (const [tagName, filePath] of Object.entries(DOCS_MAPPING)) {
+  for (const [tagName, mapping] of Object.entries(DOCS_MAPPING)) {
     try {
-      const fullPath = path.join(__dirname, "..", filePath);
+      const fullPath = path.join(__dirname, "..", mapping.file);
       if (fs.existsSync(fullPath)) {
         const rawContent = fs.readFileSync(fullPath, "utf8");
-        const processedContent = processMarkdown(rawContent);
+        const processedContent = processMarkdown(rawContent, {
+          omitReplacement: mapping.omitReplacement,
+        });
 
         const tag = spec.tags.find((t) => t.name === tagName);
         if (tag) {

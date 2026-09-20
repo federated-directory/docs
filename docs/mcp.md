@@ -90,28 +90,21 @@ In addition, MCP Apps-capable hosts can read a `ui://org-chart` resource — the
 
 For the full list of supported fields, attributes, and request/response schemas, see the [API reference](/developer/api-reference#tag/mcp).
 
+<!-- scalar:omit:start -->
+
 ## Setup
 
 To expose Federated Directory data through the MCP, an administrator needs to create a group with the right members and shared attributes, generate an API key, and assign that key to the group.
 
 ### Step 1: Create a group
 
-The group defines **who** is visible through the MCP and **which attributes** are shared with the client.
+The group defines **who** is visible through the MCP and **which attributes** are shared with the client. Follow the steps in [Create a group](/groups#create-a-group) (for example, name it `MCP - Internal Assistant`), adding the members whose contact data should be accessible through the MCP.
 
-1. Go to **Administrator > Groups**.
-2. Create a new group (for example: `MCP - Internal Assistant`).
-3. Add the members whose contact data should be accessible through the MCP.
-4. Configure the **shared attributes** for the group — only these fields will be returned to the MCP client, regardless of what it requests.
-
-This gives you precise control over what data is exposed per integration.
+When configuring the group, pay close attention to the **shared attributes** — only these fields will be returned to the MCP client, regardless of what it requests. This gives you precise control over what data is exposed per integration.
 
 ### Step 2: Create an API key
 
-1. Go to **Administrator > Directories**.
-2. Select the **Federated Directory** directory.
-3. Navigate to the **Keys** tab.
-4. Click **Create Key** and give it a descriptive name (for example: `MCP - Internal Assistant`).
-5. Copy the access token immediately — it will not be shown again.
+Go to the **Federated Directory** directory and create a key there — see [Directory keys](/administrator/directories#directory-keys) for the steps. Give it a descriptive name (for example: `MCP - Internal Assistant`) and copy the access token immediately, since it will not be shown again.
 
 Use a dedicated API key per integration so access can be tracked and revoked independently.
 
@@ -137,3 +130,5 @@ Only use the API key in trusted, server-side systems. Never expose it in fronten
 For detailed schemas, request/response examples, and tool definitions, refer to the interactive API documentation:
 
 [View MCP API Reference](/developer/api-reference#tag/mcp)
+
+<!-- scalar:omit:end -->
