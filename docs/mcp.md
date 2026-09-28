@@ -94,36 +94,35 @@ For the full list of supported fields, attributes, and request/response schemas,
 
 ## Setup
 
-To expose Federated Directory data through the MCP, an administrator first creates a [group](/groups) with the right members and shared attributes, then grants an integration access to that group using **one of two methods**:
+To expose Federated Directory data through the MCP, an administrator first creates an integration — either an OAuth 2.0 **Application** or an **API key** — and then creates a [group](/groups) that grants that integration access to the right members and shared attributes:
 
 - **OAuth 2.0 (recommended)** — each user authenticates and consents individually. Best for interactive MCP clients used directly by your own people, such as Claude Desktop, ChatGPT, or other assistant/chat integrations.
 - **API key** — a single static credential shared by a whole integration. Best for unattended, server-to-server automation where no individual user is present to log in.
 
 > A **directory key** (used for automated user provisioning, e.g. from Entra ID or Okta) cannot be used here — it cannot be assigned to a group and has no access to the MCP endpoint. Use a company-level **API key** or an **Application** instead, as described below.
 
-### Step 1: Create a group
+> Create the integration *before* the group: a group's allowed applications can only be set **when the group is created** (or left as the "all applications" wildcard) — they can't be added afterward. Creating the integration first means it's always available to select, regardless of which method you use.
 
-The group defines **who** is visible through the MCP and **which attributes** are shared with the client. Follow the steps in [Create a group](/groups#create-a-group) (for example, name it `MCP - Internal Assistant`), adding the members whose contact data should be accessible through the MCP.
-
-When configuring the group, pay close attention to the **shared attributes** — only these fields will be returned to the MCP client, regardless of what it requests. This gives you precise control over what data is exposed per integration.
-
-### Step 2: Grant an integration access to the group
+### Step 1: Create your integration
 
 Choose one of the following, depending on whether a person will be authenticating interactively or the integration runs unattended.
 
 #### Option A: OAuth 2.0 application (recommended for interactive clients)
 
-1. When [creating the group](/groups#create-a-group) (or, if using the wildcard option, at any time), select which [Application](/administrator/integrations#applications-oauth-2-0) is allowed to access it. If the application doesn't exist yet, register it first under **Integrations > Applications** — see [Applications (OAuth 2.0)](/administrator/integrations#applications-oauth-2-0).
-2. Each member of the group can now connect their MCP client (e.g. Claude Desktop, ChatGPT) directly to the MCP endpoint. The client discovers the authorization details automatically and the user is prompted to log in and consent — no token needs to be copied or configured manually.
-3. Access is automatically limited to the intersection of the groups the user belongs to and the groups that enabled that application. Revoking access is done per user (revoke their consent for the application) or by disabling the application for the group.
+Register an application under **Integrations > Applications** — see [Applications (OAuth 2.0)](/administrator/integrations#applications-oauth-2-0). Give it a descriptive name (for example: `MCP - Internal Assistant`).
 
 #### Option B: API key (for unattended/server-to-server integrations)
 
-1. Create a company-level **API key** — *not* a directory key — under **Integrations > API keys**. See [API keys](/administrator/integrations#api-keys) for the steps. Give it a descriptive name (for example: `MCP - Internal Assistant`) and copy the access token immediately, since it will not be shown again.
-2. On that same key, assign it to the group you created in Step 1 — see [Assign an API key to a group](/administrator/integrations#assign-an-api-key-to-a-group).
-3. Use a dedicated API key per integration so access can be tracked and revoked independently.
+Create a company-level **API key** — *not* a directory key — under **Integrations > API keys**. See [API keys](/administrator/integrations#api-keys) for the steps. Give it a descriptive name (for example: `MCP - Internal Assistant`) and copy the access token immediately, since it will not be shown again. Use a dedicated API key per integration so access can be tracked and revoked independently.
 
-The key now has access to exactly the contacts and attributes configured on that group.
+### Step 2: Create a group and grant it access
+
+The group defines **who** is visible through the MCP and **which attributes** are shared with the client. Follow the steps in [Create a group](/groups#create-a-group), adding the members whose contact data should be accessible through the MCP, then grant your integration access to it:
+
+- **Option A:** While [creating the group](/groups#create-a-group), select the [Application](/administrator/integrations#applications-oauth-2-0) you registered in Step 1 (or choose the "all applications" wildcard to allow it, and any future applications, without picking one now). Each member of the group can now connect their MCP client (e.g. Claude Desktop, ChatGPT) directly to the MCP endpoint — the client discovers the authorization details automatically and the user is prompted to log in and consent, no token needs to be copied or configured manually. Access is automatically limited to the intersection of the groups the user belongs to and the groups that enabled that application. Revoking access is done per user (revoke their consent for the application) or by disabling the application for the group.
+- **Option B:** After creating the group, assign the API key from Step 1 to it — see [Assign an API key to a group](/administrator/integrations#assign-an-api-key-to-a-group). The key now has access to exactly the contacts and attributes configured on that group.
+
+When configuring the group, pay close attention to the **shared attributes** — only these fields will be returned to the MCP client, regardless of what it requests. This gives you precise control over what data is exposed per integration.
 
 ### Step 3: Configure your MCP client
 
