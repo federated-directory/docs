@@ -222,8 +222,13 @@ function generateSearchIndex(spec) {
     }
   }
 
-  // Add the script to redirect based on the hash
-  const script = `<script setup>
+  // Add the script to redirect based on the hash. Wrapped in <llm-exclude>
+  // so vitepress-plugin-llms strips this JS boilerplate from the generated
+  // llms.txt/llms-full.txt/*.md output, while it stays invisible-but-present
+  // for human visitors same as before (script setup blocks aren't rendered).
+  const script = `<llm-exclude>
+
+<script setup>
 import { onMounted } from 'vue'
 import { useRouter } from 'vitepress'
 
@@ -246,6 +251,8 @@ onMounted(() => {
   }
 })
 </script>
+
+</llm-exclude>
 
 `;
 

@@ -22,6 +22,8 @@ head:
       content: Create directory keys and API keys for authentication. Generate OAuth 2.0 access tokens using JWT assertions for SCIM API access.
 ---
 
+<llm-exclude>
+
 <script setup>
 import { onMounted } from 'vue'
 import { useRouter } from 'vitepress'
@@ -32,6 +34,8 @@ onMounted(() => {
   window.location.href = '/developer/api-reference#tag/oauth2';
 })
 </script>
+
+</llm-exclude>
 
 # Obtaining a token
 

@@ -22,6 +22,8 @@ head:
       content: Create, search, update, and delete users with our SCIM 2.0 compliant API. Bulk operations and enterprise extensions supported.
 ---
 
+<llm-exclude>
+
 <script setup>
 import { onMounted } from 'vue'
 import { useRouter } from 'vitepress'
@@ -33,6 +35,8 @@ onMounted(() => {
   window.location.href = '/developer/api-reference#tag/users';
 })
 </script>
+
+</llm-exclude>
 
 # Users API
 

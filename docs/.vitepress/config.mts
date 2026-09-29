@@ -1,4 +1,5 @@
 import { defineConfig } from "vitepress";
+import llmstxt from "vitepress-plugin-llms";
 
 export default defineConfig({
   title: "Federated Directory",
@@ -101,6 +102,27 @@ export default defineConfig({
         isCustomElement: (tag) => tag === "scalar-api-reference",
       },
     },
+  },
+  vite: {
+    plugins: [
+      llmstxt({
+        domain: "https://docs.federated.directory",
+        title: "Federated Directory",
+        description:
+          "Federated Directory is a corporate address book federation platform: connect multiple companies' corporate address books (Global Address Lists) so employees can search and share contact data across organizations, with SSO, SCIM 2.0 provisioning, a web app, Outlook/Teams add-ins, and a Model Context Protocol (MCP) server for AI agents.",
+        // The homepage has real product-overview content worth surfacing to LLMs.
+        excludeIndexPage: false,
+        ignoreFiles: [
+          // Interactive Scalar mount point only (ClientOnly component) - no
+          // static markdown content. The real API surface is /swagger.json,
+          // linked from developer/developer.md instead.
+          "developer/api-reference.md",
+          // Repo README for contributors (dev setup instructions), not
+          // user-facing documentation content.
+          "README.md",
+        ],
+      }),
+    ],
   },
   themeConfig: {
     siteTitle: false,
