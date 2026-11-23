@@ -4,7 +4,7 @@ description: Search your Federated Directory directly from Outlook. Access conta
 head:
   - - link
     - rel: canonical
-      href: https://docs.federated.directory/outlook-add-in
+      href: https://docs.federated.directory/administrator/microsoft/outlook-add-in
   - - meta
     - property: og:title
       content: Microsoft Outlook Add-in for Federated Directory
@@ -13,7 +13,7 @@ head:
       content: Search your Federated Directory directly from Outlook. Access contacts across companies while composing emails. Available on desktop and web.
   - - meta
     - property: og:url
-      content: https://docs.federated.directory/outlook-add-in
+      content: https://docs.federated.directory/administrator/microsoft/outlook-add-in
   - - meta
     - name: twitter:title
       content: Microsoft Outlook Add-in for Federated Directory

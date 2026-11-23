@@ -159,13 +159,19 @@ export default defineConfig({
         text: "Integrations",
         items: [
           { text: "Model Context Protocol (MCP)", link: "/mcp" },
-          { text: "Google", link: "/administrator/google" },
+          {
+            text: "Google",
+            items: [
+              { text: "SSO & Workspace", link: "/administrator/google" },
+              { text: "Gemini Enterprise", link: "/administrator/google/gemini-enterprise" },
+            ],
+          },
           {
             text: "Microsoft",
             items: [
               { text: "SSO & Entra ID", link: "/administrator/microsoft" },
-              { text: "Outlook Add-in", link: "/outlook-add-in" },
-              { text: "Teams App", link: "/teams-app" },
+              { text: "Outlook Add-in", link: "/administrator/microsoft/outlook-add-in" },
+              { text: "Teams App", link: "/administrator/microsoft/teams-app" },
             ],
           },
           { text: "Okta", link: "/administrator/okta" },
@@ -217,13 +223,19 @@ export default defineConfig({
         text: "Integrations",
         items: [
           { text: "Model Context Protocol (MCP)", link: "/mcp" },
-          { text: "Google", link: "/administrator/google" },
+          {
+            text: "Google",
+            items: [
+              { text: "SSO & Workspace", link: "/administrator/google" },
+              { text: "Gemini Enterprise", link: "/administrator/google/gemini-enterprise" },
+            ],
+          },
           {
             text: "Microsoft",
             items: [
               { text: "SSO & Entra ID", link: "/administrator/microsoft" },
-              { text: "Outlook Add-in", link: "/outlook-add-in" },
-              { text: "Teams App", link: "/teams-app" },
+              { text: "Outlook Add-in", link: "/administrator/microsoft/outlook-add-in" },
+              { text: "Teams App", link: "/administrator/microsoft/teams-app" },
             ],
           },
           { text: "Okta", link: "/administrator/okta" },

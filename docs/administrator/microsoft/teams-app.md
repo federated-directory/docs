@@ -4,7 +4,7 @@ description: Access your Federated Directory from Teams, Outlook, and Microsoft 
 head:
   - - link
     - rel: canonical
-      href: https://docs.federated.directory/teams-app
+      href: https://docs.federated.directory/administrator/microsoft/teams-app
   - - meta
     - property: og:title
       content: Microsoft Teams App for Federated Directory
@@ -13,7 +13,7 @@ head:
       content: Access your Federated Directory from Teams, Outlook, and Microsoft 365 apps. Search contacts, chat, call, and email from one interface.
   - - meta
     - property: og:url
-      content: https://docs.federated.directory/teams-app
+      content: https://docs.federated.directory/administrator/microsoft/teams-app
   - - meta
     - name: twitter:title
       content: Microsoft Teams App for Federated Directory
@@ -50,7 +50,7 @@ As an administrator: If you would like to deploy our Teams app in your organizat
 ## Opening
 
 The app can be opened in the web and app versions of Microsoft Teams, Outlook and Microsoft 365. On your desktop or on your mobile (Android & IOS).
-If your administrator enabled [authentication with a Microsoft account](./administrator/microsoft), you will log in automatically.
+If your administrator enabled [authentication with a Microsoft account](/administrator/microsoft), you will log in automatically.
 
 ### On your desktop
 
@@ -74,11 +74,11 @@ The icon can also be pinned to the bottom menu. This makes it easily accessible 
 
 ## Searching
 
-This works exactly as described on the [search](./search) documentation page. All the advanced search and filtering functionality is available in the Teams app.
+This works exactly as described on the [search](/search) documentation page. All the advanced search and filtering functionality is available in the Teams app.
 
 ## Chat
 
-When a chat method is [enabled in a group](./groups), the users are able to initiate a chat directly from the Federated Directory add-in.
+When a chat method is [enabled in a group](/groups), the users are able to initiate a chat directly from the Federated Directory add-in.
 
 <img src="/images/microsoft-teams-app-mobile-chat.png" alt="Chat directly from our Teams app on mobile" style="border: none; max-width: 200px;"/>
 

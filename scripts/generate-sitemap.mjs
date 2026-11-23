@@ -4,7 +4,7 @@
  */
 
 import { SitemapStream, streamToPromise } from 'sitemap';
-import { createWriteStream, readdirSync, statSync } from 'fs';
+import { createWriteStream, readdirSync, readFileSync, statSync } from 'fs';
 import { join, extname, resolve, relative } from 'path';
 import { fileURLToPath } from 'url';
 import { dirname } from 'path';
@@ -69,6 +69,11 @@ async function generateSitemap() {
   htmlFiles.forEach(filePath => {
     const url = filePathToUrl(filePath);
     const urlLower = url.toLowerCase();
+
+    // Skip redirect stubs for pages that have moved (see docs/public/*.html)
+    if (readFileSync(filePath, 'utf8').includes('<!-- redirect-stub -->')) {
+      return;
+    }
     
     // Skip unwanted pages
     if (urlLower === '/404' || urlLower === '/readme' || urlLower.includes('/404') || urlLower.includes('/readme')) {

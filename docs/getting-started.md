@@ -110,7 +110,7 @@ This 'smart filter' adds all the users to this group that meets this specific fi
 ### Search across companies
 
 You and your colleagues can now [login](./login) and [search](./search) through all the directories at the same time.
-This can be done, through our web based application (PWA) or through our <a href="./client-integrations/outlook-add-in">Microsoft Outlook add-in</a>.
+This can be done, through our web based application (PWA) or through our <a href="/administrator/microsoft/outlook-add-in">Microsoft Outlook add-in</a>.
 
 ### Optional: Sync a group to Entra ID
 
